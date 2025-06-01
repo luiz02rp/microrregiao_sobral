@@ -1,0 +1,42 @@
+CNES - Estabelecimentos por Tipo - Ceará
+Quantidade por Região de Saúde/Município
+Região de Saúde (CIR): 23011 5ª  RS Sobral
+Macrorregião de Saúde: 2309 SOBRAL
+Divisão administ estadual: 2311 Sobral
+Tipo de Estabelecimento: CENTRO DE SAUDE/UNIDADE BASICA
+Período:Abr/2025
+"Região de Saúde/Município";"Quantidade"
+"23011 5ª  RS Sobral";210
+".....  ALCANTARAS";7
+".....  URUOCA";8
+".....  SOBRAL";39
+".....  GRACA";7
+".....  FORQUILHA";9
+".....  FRECHEIRINHA";5
+".....  CARIRE";8
+".....  MORAUJO";4
+".....  PACUJA";4
+".....  IRAUCUBA";9
+".....  VARJOTA";7
+".....  MUCAMBO";5
+".....  COREAU";8
+".....  MERUOCA";7
+".....  IPU";19
+".....  MASSAPE";12
+".....  SANTANA DO ACARAU";12
+".....  HIDROLANDIA";8
+".....  SENADOR SA";5
+".....  CATUNDA";5
+".....  GROAIRAS";1
+".....  RERIUTABA";8
+".....  SANTA QUITERIA";13
+"Total";210
+ Fonte: Ministério da Saúde - Cadastro Nacional dos Estabelecimentos de Saúde do Brasil - CNES
+ Nota:
+ - Os dados relativos ao Cadastro Nacional de Estabelecimentos de Saúde (CNES) exibidos no TABNET referem-se aos registros constantes no Banco de Dados Nacional do CNES com status ATIVO.
+ - A partir do processamento de junho de 2012, houve mudança na classificação da natureza e esfera dos estabelecimentos. Com isso, temos que:
+ 
+ Até maio de 2012 estas informações estão disponíveis como "Natureza" e "Esfera Administrativa".
+ De junho de 2012 a outubro de 2015, estão disponíveis tanto como "Natureza" e "Esfera Administrativa", como "Natureza Jurídica" e "Esfera Jurídica".
+ A partir de novembro de 2015, estão disponíveis como "Natureza Jurídica" e "Esfera Jurídica".
+ 
