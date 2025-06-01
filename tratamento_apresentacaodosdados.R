@@ -5,6 +5,7 @@ library(sf)
 library(scales)
 library(geobr)
 library(readr)
+library(plotly)
 # chamando banco de dados -------------------------------------------------
 # população do ceará
 ce_municipios <- read_municipality(code_muni = "CE", year = 2024)
@@ -62,10 +63,41 @@ ce_municipios |>
   theme_void()
 
 # B) Gráfico de coluna
-ce_municipios |> 
+# população x nome do município
+gra_col <- pop_micro_sobral |> 
+  mutate(populacao_formatada = format(populacao, big.mark = ".", decimal.mark = ",")) |> 
   ggplot(
-    aes(y = name_muni)
+    aes(x = populacao,
+        y = reorder(municipio, populacao),
+        text = paste("Município:", municipio, "<br>População:", populacao_formatada)),
+    color = "white"
   )+
-  geom_col()
+  geom_col(fill = "grey")+
+  labs(
+    title = "Distribuição populacional por município",
+    x = "População",
+    y = "Municípios"
+  )+
+  # remover espaçamento entre o nome dos municípios e as colunas
+  scale_x_continuous(expand = c(0,0),
+                     breaks = c(6131, 43358, 197663),
+                     limits = c(0, max(pop_micro_sobral$populacao)*1.02))+
+  # remover fundo quadriculado
+  theme(
+    panel.background = element_blank(),
+    axis.line.y = element_line(),
+    axis.title.y = element_text(margin = margin(r = 15)),
+    plot.margin = margin(l = 100, r = 20),
+    axis.line.x = element_line()
+  )
+# tranformar em gráfico interativo
+gra_col_int <- ggplotly(gra_col, tooltip = "text") |> 
+  layout(margin = list(l = 120, r = 50, t = 50, b = 50),
+         yaxis = list(
+           title = list(standoff = 10)
+         ))
+            
+  
+  
 
 
