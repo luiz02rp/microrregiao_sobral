@@ -61,6 +61,7 @@ ce_municipios |>
   ) +
   theme_void()
 
+# B) Gráfico de coluna
 ce_municipios |> 
   ggplot(
     aes(y = name_muni)

@@ -1,0 +1,11 @@
+- dados populacionais:
+https://www.saude.ce.gov.br/wp-content/uploads/sites/9/2018/06/pdr-2014.pdf
+
+- mortalidade: 
+https://www.saude.ce.gov.br/tabnet-ceara/sim/
+
+
+
+outras atividades:
+- fazer upload da malha geográfica do próprio computador
+- preencher a malha geográfica com as informações populacionais do banco da micro_sobral
