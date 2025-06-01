@@ -9,6 +9,6 @@ https://www.saude.ce.gov.br/tabnet-ceara/sim/
 outras atividades:
 - colocar gráfico de coluna sobre a população por município (feito)
 - pesquisar sobre os dispositivos presentes na microrregião de sobral por município
-- pesquisar sobre a natalidade por municípios da microrregião de sobral
+- pesquisar sobre a natalidade por municípios da microrregião de sobral (feito)
 - fazer upload da malha geográfica do próprio computador
 - preencher a malha geográfica com as informações populacionais do banco da micro_sobral
