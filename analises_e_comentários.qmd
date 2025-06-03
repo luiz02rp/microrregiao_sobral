@@ -97,7 +97,6 @@ ce_municipios |>
   ) +
   theme_void()
 ```
-
 ```{r}
 #| message: false
 #| warning: false
@@ -136,7 +135,7 @@ gra_col_int <- ggplotly(gra_col, tooltip = "text") |>
          yaxis = list(
            title = list(standoff = 10)
          ))
-gra_col
+gra_col_int
 ```
 
 
