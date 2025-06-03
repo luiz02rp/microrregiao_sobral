@@ -64,7 +64,8 @@ mort_micro_sobral <- mort_micro_sobral |>
   clean_names()
 ```
 
-# Resultado da análise descritiva
+# Análise descritiva
+A microrregião de Sobral é composta por 24 municípios. São eles: Alcântaras, Cariré, Catunda, Coreaú, Forquilha, Frecheirinha, Graça, Groaíras, Hidrolândia, Ipu, Irauçuba, Massapê, Meruoca, Moraújo, Mucambo, Pacujá, Pires Ferreira, Reriutaba, Santa Quitéria, Santana Do Acaraú, Senador Sá, Sobral, Uruoca, Varjota. 
 ```{r}
 #| include: false
 #| message: false
