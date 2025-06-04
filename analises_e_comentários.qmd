@@ -1,6 +1,8 @@
 ---
 title: "Microrregião de Sobral"
-format: html
+format:
+  html:
+    embed-resources: true
 ---
 
 ```{r}
@@ -100,7 +102,7 @@ pop_micro_sobral |>
 ce_municipios |> 
   ggplot()+
   geom_sf(aes(fill = populacao), color = "white", size = 0.1) +
-  scale_fill_viridis_c(option = "inferno", labels = comma) +
+  scale_fill_viridis_c(option = "plasma", labels = comma) +
   labs(
     title = "Distribuição populacional da Microrregião de Sobral",
     fill = "População"
