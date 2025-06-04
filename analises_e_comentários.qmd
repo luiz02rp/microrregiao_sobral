@@ -25,7 +25,7 @@ library(plotly)
 # população do ceará
 ce_municipios <- read_municipality(code_muni = "CE", year = 2024)
 # população da micro sobral
-pop_micro_sobral <- read_csv2("data/micro_sobral.csv")
+pop_micro_sobral <- read_csv2("data/pop_ce_censo_2022_limpo.csv")
 # mortalidade da micro sobral
 mort_micro_sobral <- read_csv("data/mortalidade_micro_sobral.csv",
                               locale = locale(encoding = "Latin1")) 
@@ -65,7 +65,14 @@ mort_micro_sobral <- mort_micro_sobral |>
 ```
 
 # Análise descritiva
-A microrregião de Sobral é composta por 24 municípios. São eles: Alcântaras, Cariré, Catunda, Coreaú, Forquilha, Frecheirinha, Graça, Groaíras, Hidrolândia, Ipu, Irauçuba, Massapê, Meruoca, Moraújo, Mucambo, Pacujá, Pires Ferreira, Reriutaba, Santa Quitéria, Santana Do Acaraú, Senador Sá, Sobral, Uruoca, Varjota. 
+A microrregião de Sobral é composta por 24 municípios. São eles: Alcântaras, Cariré, Catunda, Coreaú, Forquilha, Frecheirinha, Graça, Groaíras, Hidrolândia, Ipu, Irauçuba, Massapê, Meruoca, Moraújo, Mucambo, Pacujá, Pires Ferreira, Reriutaba, Santa Quitéria, Santana Do Acaraú, Senador Sá, Sobral, Uruoca e Varjota. Tais municípios totalizam 658665 em termos populacionais o que representa em torno de 7% da população do Ceará (https://sidra.ibge.gov.br/tabela/6579).
+
+Sobral constitui o mais populoso dentre eles com 215.286 mil habitantes. Ipu o segundo lugar nesse posto com uma poulação estimada em 42.968 mil. Paculá, por outro lado, tem a menor população que gira em torno de 6.345 mil habitantes (https://sidra.ibge.gov.br/tabela/6579). A partir desses dados, constata-se uma desigual distribuição populacional. Tal discrepância pode ser verificada ao se ater à diferença já entre Ipú e Sobral que é de 172.318. Quando comparado com o menor município em termos populacionais (Pacujá), a diferença sobe para 208.941. 
+
+=> ideia de colocar uma tabela
+=> A seguir, apresentar um gráfico
+
+
 ```{r}
 #| include: false
 #| message: false
@@ -120,7 +127,7 @@ gra_col <- pop_micro_sobral |>
   )+
   # remover espaçamento entre o nome dos municípios e as colunas
   scale_x_continuous(expand = c(0,0),
-                     breaks = c(6131, 43358, 197663),
+                     breaks = c(6345, 42968, 215286),
                      limits = c(0, max(pop_micro_sobral$populacao)*1.02))+
   # remover fundo quadriculado
   theme(
