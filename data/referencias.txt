@@ -1,8 +1,8 @@
 - dados populacionais:
-https://sidra.ibge.gov.br/tabela/6579
+https://www.saude.ce.gov.br/wp-content/uploads/sites/9/2018/06/pdr-2014.pdf
 
 - mortalidade: 
-https://www.saude.ce.gov.br/tabnet-ceara/sim/
+http://extranet.saude.ce.gov.br/tabulacao/tabnet?sim/obito.def
 
 
 
@@ -12,3 +12,32 @@ outras atividades:
 - pesquisar sobre a natalidade por municípios da microrregião de sobral (feito)
 - fazer upload da malha geográfica do próprio computador
 - preencher a malha geográfica com as informações populacionais do banco da micro_sobral
+
+reunião:
+
+bancos de dados
+> população - 2014
+> nascimentos - 2024
+> mortalidade - 
+> equipamentos - 
+> equipes - 
+
+
+
+1 - descrição da população da microrregião de sobral
+número de cidades
+população total
+valor mínimo e valor máximo
+Distribuição etária e por sexo (útil para análises epidemiológicas)
+2 - mortalidade e natalidade
+quantidade de mortos
+quantidade de nascidos vivos
+Taxa de mortalidade geral (por 1.000 hab.)
+Taxa de natalidade
+Causas mais frequentes de morte (agrupadas por capítulos CID-10)
+3 - equipamentos e equipes
+quais equipamentos
+quais equipes
+Número total e por tipo de equipamento
+comparativo entre municípios
+
