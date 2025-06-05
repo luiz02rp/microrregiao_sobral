@@ -73,7 +73,7 @@ mort_micro_sobral <- mort_micro_sobral |>
 #| echo: false
 
  a <- 658665/9233656
- a <- label_percent()(a)
+ a <- label_percent(accuracy = 0.001)(a)
 ```
 
 ## População
