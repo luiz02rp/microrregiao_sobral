@@ -66,12 +66,12 @@ mort_micro_sobral <- mort_micro_sobral |>
   clean_names()
 ```
 
-# Análise descritiva
-A microrregião de Sobral é composta por 24 municípios. São eles: Alcântaras, Cariré, Catunda, Coreaú, Forquilha, Frecheirinha, Graça, Groaíras, Hidrolândia, Ipu, Irauçuba, Massapê, Meruoca, Moraújo, Mucambo, Pacujá, Pires Ferreira, Reriutaba, Santa Quitéria, Santana Do Acaraú, Senador Sá, Sobral, Uruoca e Varjota. Tais municípios totalizam 658665 em termos populacionais o que representa em torno de 7% da população do Ceará (https://sidra.ibge.gov.br/tabela/6579).
+# Aspectos sócio-demográficos
+## População
+A microrregião de Sobral é composta por 24 municípios. São eles: Alcântaras, Cariré, Catunda, Coreaú, Forquilha, Frecheirinha, Graça, Groaíras, Hidrolândia, Ipu, Irauçuba, Massapê, Meruoca, Moraújo, Mucambo, Pacujá, Pires Ferreira, Reriutaba, Santa Quitéria, Santana Do Acaraú, Senador Sá, Sobral, Uruoca e Varjota. Tais municípios totalizam 658.665 mil em termos populacionais o que representa 39,2% da população da macrorregião norte (1.679.525 milhões) e em torno de 7% da população do Ceará (9.233.656 milhões). (https://sidra.ibge.gov.br/tabela/6579).
 
-=> adicionar o quanto desse valor representa da população da macrorregião norte
-
-Sobral constitui o mais populoso dentre eles com 215.286 mil habitantes. Ipu o segundo lugar nesse posto com uma poulação estimada em 42.968 mil. Paculá, por outro lado, tem a menor população que gira em torno de 6.345 mil habitantes (https://sidra.ibge.gov.br/tabela/6579). A partir desses dados, constata-se uma desigual distribuição populacional. Tal discrepância pode ser verificada ao se ater à diferença já entre Ipú e Sobral que é de 172.318. Quando comparado com o menor município em termos populacionais (Pacujá), a diferença sobe para 208.941. 
+## Gênero
+Quando se realiza o recorte de gênero, nota-se que não há uma grande discrepância entre o quantitativo de homens (49%) e mulheres (51%) na microrregião de sobral. Sobral constitui o mais populoso dentre eles com 215.286 mil habitantes. Ipu o segundo lugar nesse posto com uma poulação estimada em 42.968 mil. Paculá, por outro lado, tem a menor população que gira em torno de 6.345 mil habitantes (https://sidra.ibge.gov.br/tabela/6579). A partir desses dados, constata-se uma desigual distribuição populacional. Tal discrepância pode ser verificada ao se ater à diferença já entre Ipú e Sobral que é de 172.318. Quando comparado com o menor município em termos populacionais (Pacujá), a diferença sobe para 208.941. 
 
 => ideia de colocar uma tabela
 => A seguir, apresentar um gráfico
@@ -149,7 +149,8 @@ gra_col_int <- ggplotly(gra_col, tooltip = "text") |>
          ))
 gra_col_int
 ```
-
+## Natalidade e mortalidade
+## Equipamentos
 
 
 
