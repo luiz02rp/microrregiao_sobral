@@ -16,9 +16,9 @@ outras atividades:
 reunião:
 
 bancos de dados
-> população - 2014
+> população - censo de 2022
 > nascimentos - 2024
-> mortalidade - 
+> mortalidade - 2024-2025
 > equipamentos - 
 > equipes - 
 
@@ -29,6 +29,7 @@ número de cidades
 população total
 valor mínimo e valor máximo
 Distribuição etária e por sexo (útil para análises epidemiológicas)
+=> baixado a distribuição por idade
 2 - mortalidade e natalidade
 quantidade de mortos
 quantidade de nascidos vivos
