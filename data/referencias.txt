@@ -1,8 +1,14 @@
 - dados populacionais:
-https://www.saude.ce.gov.br/wp-content/uploads/sites/9/2018/06/pdr-2014.pdf
+https://sidra.ibge.gov.br/tabela/6579
 
 - mortalidade: 
 http://extranet.saude.ce.gov.br/tabulacao/tabnet?sim/obito.def
+
+- população por gênero
+https://sidra.ibge.gov.br/tabela/9514
+
+- mapa completo da regionalização por macrorregião
+
 
 
 
@@ -29,7 +35,8 @@ número de cidades
 população total
 valor mínimo e valor máximo
 Distribuição etária e por sexo (útil para análises epidemiológicas)
-=> baixado a distribuição por idade
+=> FEITO
+
 2 - mortalidade e natalidade
 quantidade de mortos
 quantidade de nascidos vivos
