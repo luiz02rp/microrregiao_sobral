@@ -29,8 +29,7 @@ ce_municipios <- read_municipality(code_muni = "CE", year = 2024)
 # população da micro sobral
 pop_micro_sobral <- read_csv2("data/pop_ce_censo_2022_limpo.csv")
 # mortalidade da micro sobral
-mort_micro_sobral <- read_csv("data/mortalidade_micro_sobral.csv",
-                              locale = locale(encoding = "Latin1")) 
+mort_nascidos_vivos_micro_sobral <- read_csv2("data/mort_e_nascidosvivos_micro_sobral.csv") 
 ```
 
 ```{r}
@@ -61,9 +60,16 @@ ce_municipios <- ce_municipios |>
 #| include: false
 #| message: false
 #| warning: false
-# tratando banco da mortalidade
-mort_micro_sobral <- mort_micro_sobral |> 
+# tratando banco de número de mortos e nascidos vivos
+mort_nascidos_vivos_micro_sobral <- mort_nascidos_vivos_micro_sobral |> 
   clean_names()
+
+mort_nascidos_vivos_micro_sobral |> 
+   summarise(
+    qde_morte_micro_sobral = sum(mort_nascidos_vivos_micro_sobral$qde_morte_micro_sobral),
+    qde_nascidos_vivos_micro_sobral = sum(mort_nascidos_vivos_micro_sobral$qde_nascidos_vivos_micro_sobral)
+  )
+ 
 ```
 
 # Aspectos sócio-demográficos
@@ -158,7 +164,22 @@ gra_col_int <- ggplotly(gra_col, tooltip = "text") |>
          ))
 gra_col_int
 ```
+```{r}
+#| echo: false
+mortes <- sum(mort_nascidos_vivos_micro_sobral$mortes)
+vivos <- sum(mort_nascidos_vivos_micro_sobral$nascidos_vivos)
+# formatar para texto
+mortes <- number(mortes, big.mark = ".", decimal.mark = ",")
+vivos <- number(vivos, big.mark = ".", decimal.mark = ",")
+```
+
 ## Natalidade e mortalidade
+A microrrgião de Sobral de 2024 a 2025 registrou `r mortes` mil mortes e `r vivos` mil nascidos vivos.
+
+=> colocar um gráfico com a correlação entre os municípios com maior número de mortes 
+
+=> depois disso, fazer uma apresentação das informações do gráfico nesse primeiro parágrafo
+
 ## Equipamentos
 
 
