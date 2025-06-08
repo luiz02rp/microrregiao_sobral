@@ -2,10 +2,13 @@
 https://sidra.ibge.gov.br/tabela/6579
 
 - mortalidade: 
-http://extranet.saude.ce.gov.br/tabulacao/tabnet?sim/obito.def
+https://www.saude.ce.gov.br/tabnet-ceara/sim/
 
 - população por gênero
 https://sidra.ibge.gov.br/tabela/9514
+
+- natalidade:
+https://www.saude.ce.gov.br/tabnet-ceara/sinasc/
 
 - mapa completo da regionalização por macrorregião
 
@@ -40,10 +43,10 @@ Distribuição etária e por sexo (útil para análises epidemiológicas)
 2 - mortalidade e natalidade
 quantidade de mortos
 quantidade de nascidos vivos
-Taxa de mortalidade geral (por 1.000 hab.)
-Taxa de natalidade
+Correlação entre Nascimentos e Óbitos - espero que onde nasça mais, morra mais pessoas
 Causas mais frequentes de morte (agrupadas por capítulos CID-10)
 3 - equipamentos e equipes
+fazer um comparativo se onde tem mais equipamentos morre mais pesssoas ou nasce mais.
 quais equipamentos
 quais equipes
 Número total e por tipo de equipamento
