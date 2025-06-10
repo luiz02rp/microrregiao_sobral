@@ -17,6 +17,8 @@ library(scales)
 library(geobr)
 library(readr)
 library(plotly)
+library(ggrepel)
+library(viridis)
 ```
 
 ```{r}
@@ -82,14 +84,13 @@ mort_nascidos_vivos_micro_sobral |>
  a <- label_percent(accuracy = 0.001)(a)
 ```
 
-## População
 A microrregião de Sobral é composta por 24 municípios. São eles: Alcântaras, Cariré, Catunda, Coreaú, Forquilha, Frecheirinha, Graça, Groaíras, Hidrolândia, Ipu, Irauçuba, Massapê, Meruoca, Moraújo, Mucambo, Pacujá, Pires Ferreira, Reriutaba, Santa Quitéria, Santana Do Acaraú, Senador Sá, Sobral, Uruoca e Varjota. Tais municípios totalizam 658.665 mil em termos populacionais o que representa 39,2% da população da macrorregião norte (1.679.525 milhões) e em torno de `r a`  da população do Ceará (9.233.656 milhões). (https://sidra.ibge.gov.br/tabela/6579).
 
-## Gênero
-Quando se realiza o recorte de gênero, nota-se que não há uma grande discrepância entre o quantitativo de homens (49%) e mulheres (51%) na microrregião de sobral. Sobral constitui o mais populoso dentre eles com 215.286 mil habitantes. Ipu o segundo lugar nesse posto com uma poulação estimada em 42.968 mil. Paculá, por outro lado, tem a menor população que gira em torno de 6.345 mil habitantes (https://sidra.ibge.gov.br/tabela/6579). A partir desses dados, constata-se uma desigual distribuição populacional. Tal discrepância pode ser verificada ao se ater à diferença já entre Ipú e Sobral que é de 172.318. Quando comparado com o menor município em termos populacionais (Pacujá), a diferença sobe para 208.941. 
+Quando se realiza o recorte de gênero, nota-se que não há uma grande discrepância entre o quantitativo de homens (49%) e mulheres (51%) na microrregião de sobral. Sobral constitui o mais populoso dentre eles com 215.286 mil habitantes. Ipu o segundo lugar nesse posto com uma poulação estimada em 42.968 mil. Paculá, por outro lado, tem a menor população que gira em torno de 6.345 mil habitantes (https://sidra.ibge.gov.br/tabela/6579). 
 
-=> ideia de colocar uma tabela
-=> A seguir, apresentar um gráfico
+A partir desses dados, constata-se uma desigual distribuição populacional. Tal discrepância pode ser verificada ao se ater à diferença já entre Ipú e Sobral que é de 172.318. Quando comparado com o menor município em termos populacionais (Pacujá), a diferença sobe para 208.941. 
+
+=> ideia de colocar uma tabela, substituindo gráfico de colunas
 
 
 ```{r}
@@ -168,17 +169,75 @@ gra_col_int
 #| echo: false
 mortes <- sum(mort_nascidos_vivos_micro_sobral$mortes)
 vivos <- sum(mort_nascidos_vivos_micro_sobral$nascidos_vivos)
-# formatar para texto
+# sobral
+mortes_sobral <- mort_nascidos_vivos_micro_sobral[[22, 2]]
+vivos_sobral <- mort_nascidos_vivos_micro_sobral[[22, 3]]
+# ipu
+mortes_ipu <- mort_nascidos_vivos_micro_sobral[[10, 2]]
+vivos_ipu <- mort_nascidos_vivos_micro_sobral[[10, 3]]
+# pacujá
+mortes_pacuja <- mort_nascidos_vivos_micro_sobral[[16, 2]]
+vivos_pacuja <- mort_nascidos_vivos_micro_sobral[[16, 3]]
+
+## formatar para texto
+# geral
 mortes <- number(mortes, big.mark = ".", decimal.mark = ",")
 vivos <- number(vivos, big.mark = ".", decimal.mark = ",")
+# sobral
+mortes_sobral <- number(mortes_sobral, big.mark = ".", decimal.mark = ",")
+vivos_sobral <- number(vivos_sobral, big.mark = ".", decimal.mark = ",")
+# ipu
+mortes_ipu <- number(mortes_ipu, big.mark = ".", decimal.mark = ",")
+vivos_ipu <- number(vivos_ipu, big.mark = ".", decimal.mark = ",")
+
+## informações populacionais
+# Santa Quitéria
+pop_sq <- pop_micro_sobral[[20, 2]]
+pop_sq <- number(pop_sq, big.mark = ".", decimal.mark = ",")
+# Massapê
+pop_mass <- pop_micro_sobral[[12, 2]]
+pop_mass <- number(pop_mass, big.mark = ".", decimal.mark = ",")
 ```
 
 ## Natalidade e mortalidade
-A microrrgião de Sobral de 2024 a 2025 registrou `r mortes` mil mortes e `r vivos` mil nascidos vivos.
+A microrrgião de Sobral de 2024 a 2025 registrou `r mortes` mil mortes e `r vivos` mil nascidos vivos.Entre os municípios, Sobral lidera em número de mortos (`r mortes_sobral` mil) e de nascidos vivos (`r vivos_sobral`). Ipú, por sua vez, figura como segundo, com `r mortes_ipu` mortos e `r vivos_ipu` nascidos vivos. Pacujá, por outro lado, registrou `r mortes_pacuja` mortes e `r vivos_pacuja` nascidos vivos. Observa-se, portanto, que essas duas informações - nascidos vivos e número de mortos - em geral acaba seguindo aquela lista dos mais populosos para os com menos habitantes. 
 
-=> colocar um gráfico com a correlação entre os municípios com maior número de mortes 
+Uma diferença que vale ser mencionada é que, embora Santa Quitéria seja o terceiro mais populoso, ela perde para Massapê nesses números, embora por um diferença muito pequena. São cidades com um quantitativo populacional próximo também: Santa Quitéria com `r pop_sq` e Massapê com `r pop_mass`, como estava expresso no gráfico anterior.
 
-=> depois disso, fazer uma apresentação das informações do gráfico nesse primeiro parágrafo
+Em razão dessa grande quantidade de nascidos vivos e mortes em Sobral, esperamos que essa cidade concentre um quantitativo maior de equipamentos de saúde; enquanto Pacujá sofra o efeito contrário e que esse padrão se repita para os outros municípios.
+
+(https://www.saude.ce.gov.br/tabnet-ceara/sim/)
+
+```{r}
+#| label: gráfico de dispersão com nascidos vivos por mortos em cada município
+#| echo: false
+#| warning: false
+#| message: false
+mort_nascidos_vivos_micro_sobral |> 
+  ggplot(
+    aes(x = nascidos_vivos, y = mortes)
+  )+
+  geom_point(color = "black", size = 2) +
+  geom_text_repel(
+    data = subset(mort_nascidos_vivos_micro_sobral, municipio %in% c("Sobral", "Ipu", "Massapê", "Santa Quitéria", "Pacujá")),
+    aes(label = municipio),
+    size = 3
+  )+
+  labs(
+    title = "Relação entre nascidos vivos e mortos por município",
+    x = "Nascidos vivos",
+    y = "Mortes"
+  )+
+  theme_minimal()+
+  theme(
+    plot.title = element_text(size = 14, face = "bold"),
+    axis.title = element_text(size = 12)
+  )+
+  scale_x_log10()+
+  scale_y_log10()+
+  scale_color_viridis_d()
+```
+ 
 
 ## Equipamentos
 
