@@ -38,13 +38,15 @@ número de cidades
 população total
 valor mínimo e valor máximo
 Distribuição etária e por sexo (útil para análises epidemiológicas)
+Tabela para quantidade de população por município
 => FEITO
 
 2 - mortalidade e natalidade
 quantidade de mortos
 quantidade de nascidos vivos
 Correlação entre Nascimentos e Óbitos - espero que onde nasça mais, morra mais pessoas
-Causas mais frequentes de morte (agrupadas por capítulos CID-10)
+=> FEITO
+
 3 - equipamentos e equipes
 fazer um comparativo se onde tem mais equipamentos morre mais pesssoas ou nasce mais.
 quais equipamentos

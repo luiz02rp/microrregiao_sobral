@@ -200,13 +200,13 @@ pop_mass <- number(pop_mass, big.mark = ".", decimal.mark = ",")
 ```
 
 ## Natalidade e mortalidade
-A microrrgião de Sobral de 2024 a 2025 registrou `r mortes` mil mortes e `r vivos` mil nascidos vivos.Entre os municípios, Sobral lidera em número de mortos (`r mortes_sobral` mil) e de nascidos vivos (`r vivos_sobral`). Ipú, por sua vez, figura como segundo, com `r mortes_ipu` mortos e `r vivos_ipu` nascidos vivos. Pacujá, por outro lado, registrou `r mortes_pacuja` mortes e `r vivos_pacuja` nascidos vivos. Observa-se, portanto, que essas duas informações - nascidos vivos e número de mortos - em geral acaba seguindo aquela lista dos mais populosos para os com menos habitantes. 
+A microrrgião de Sobral de 2024 a 2025 registrou `r mortes` mil mortes e `r vivos` mil nascidos vivos.Entre os municípios, Sobral lidera em número de mortos (`r mortes_sobral` mil) e de nascidos vivos (`r vivos_sobral`). Ipú, por sua vez, figura como segundo, com `r mortes_ipu` mortos e `r vivos_ipu` nascidos vivos. Pacujá, por outro lado, registrou `r mortes_pacuja` mortes e `r vivos_pacuja` nascidos vivos. Observa-se, portanto, que essas duas informações - nascidos vivos e número de mortos - em geral acaba seguindo aquela lista dos mais populosos para os com menos habitantes. (https://www.saude.ce.gov.br/tabnet-ceara/sim/ ; https://www.saude.ce.gov.br/tabnet-ceara/sinasc/)
 
-Uma diferença que vale ser mencionada é que, embora Santa Quitéria seja o terceiro mais populoso, ela perde para Massapê nesses números, embora por um diferença muito pequena. São cidades com um quantitativo populacional próximo também: Santa Quitéria com `r pop_sq` e Massapê com `r pop_mass`, como estava expresso no gráfico anterior.
+Uma diferença que vale ser mencionada é que, embora Santa Quitéria seja o terceiro mais populoso, ela perde para Massapê nesses números, embora por um diferença muito pequena. São cidades com um quantitativo populacional próximo também: Santa Quitéria com `r pop_sq` e Massapê com `r pop_mass`, como estava expresso no gráfico anterior. (https://sidra.ibge.gov.br/tabela/6579)
 
 Em razão dessa grande quantidade de nascidos vivos e mortes em Sobral, esperamos que essa cidade concentre um quantitativo maior de equipamentos de saúde; enquanto Pacujá sofra o efeito contrário e que esse padrão se repita para os outros municípios.
 
-(https://www.saude.ce.gov.br/tabnet-ceara/sim/)
+
 
 ```{r}
 #| label: gráfico de dispersão com nascidos vivos por mortos em cada município
