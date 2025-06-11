@@ -54,3 +54,18 @@ quais equipes
 Número total e por tipo de equipamento
 comparativo entre municípios
 
+
+próximas atividades:
+Sara
+> criação de uma tabela com descritiva da microrregião
+- média, desvio-padrão, valor máximo e mínimo
+> colocar no texto as informações de média e desvio padrão 
+> colocar referências que estão em parênteses
+- bibtex
+> pesquisar equipamentos
+> tornar gráfico de calor interativo interativo
+Luiz
+> pesquisar equipamentos
+> mudar o idioma do sumário ok
+> tonar a saída do documento em pptx e manter a interatividade
+
