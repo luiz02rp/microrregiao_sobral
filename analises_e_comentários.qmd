@@ -9,12 +9,13 @@ format:
     embed-resources: true
 ---
 
-```{r}
+```{r pacotes}
 #| include: false
 #| message: false
 #| warning: false
 
 library(tidyverse)
+library(dplyr)
 library(janitor)
 library(sf)
 library(scales)
@@ -25,28 +26,37 @@ library(ggrepel)
 library(viridis)
 library(knitr)
 library(tidyr)
+library(knitr)
 ```
 
-```{r}
+```{r importacao_dados}
 #| include: false
 #| message: false
 #| warning: false
 # chamando banco de dados
+
 # população do ceará
 ce_municipios <- read_municipality(code_muni = "CE", year = 2024)
+
 # população da micro sobral
 pop_micro_sobral <- read_csv2("data/pop_ce_censo_2022_limpo.csv")
+
 # mortalidade da micro sobral
 mort_nascidos_vivos_micro_sobral <- read_csv2("data/mort_e_nascidosvivos_micro_sobral.csv") 
+
 # equipamentos
 equipamentos <- read_csv2("data/equipamentos_limpo.csv")
+
+#idade e sexo
+pop_idade_sexo <- read.csv("data/pop_sexo_idade - Página1.csv",stringsAsFactors = FALSE)
 ```
 
-```{r}
+```{r tratamento_dos_dados}
 #| include: false
 #| message: false
 #| warning: false
-# tratamento dos dados
+knitr::opts_chunk$set(echo = FALSE)
+
 # população dos municípios da micro sobral
 pop_micro_sobral <- pop_micro_sobral |> 
   clean_names() |> 
@@ -64,13 +74,10 @@ ce_municipios <- ce_municipios |>
   mutate(
     name_muni = str_to_title(name_muni)) |> 
   inner_join(pop_micro_sobral, by = c("name_muni" = "municipio"))
-```
 
-```{r}
-#| include: false
-#| message: false
-#| warning: false
-# tratando banco de número de mortos e nascidos vivos
+#----
+
+# banco de número de mortos e nascidos vivos
 mort_nascidos_vivos_micro_sobral <- mort_nascidos_vivos_micro_sobral |> 
   clean_names()
 
@@ -79,6 +86,26 @@ mort_nascidos_vivos_micro_sobral |>
     qde_morte_micro_sobral = sum(mort_nascidos_vivos_micro_sobral$qde_morte_micro_sobral),
     qde_nascidos_vivos_micro_sobral = sum(mort_nascidos_vivos_micro_sobral$qde_nascidos_vivos_micro_sobral)
   )
+
+# idade e sexo
+# porcentagem de cada faixa etária nos municípios
+pop_idade_sexo <- pop_idade_sexo |>
+  mutate(
+    jovens_total = as.numeric(jovens_total),
+    idosos_total = as.numeric(idosos_total),
+    pop_ativa_total = as.numeric(pop_ativa_total),
+    pop_total = as.numeric(pop_total),
+    perc_jovens = round((jovens_total/pop_total)*100, 2),
+    perc_ativos = round((pop_ativa_total/pop_total)*100, 2),
+    perc_idosos = round((idosos_total/pop_total)*100, 2)
+  )
+```
+
+```{r}
+#| include: false
+#| message: false
+#| warning: false
+# tratando 
  
 ```
 
