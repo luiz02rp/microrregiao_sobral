@@ -26,6 +26,8 @@ library(ggrepel)
 library(viridis)
 library(knitr)
 library(tidyr)
+library(psych)
+library(apaTables)
 ```
 
 ```{r importacao_dados}
@@ -97,14 +99,6 @@ pop_idade_sexo <- pop_idade_sexo |>
   )
 ```
 
-```{r}
-#| include: false
-#| message: false
-#| warning: false
-# tratando 
- 
-```
-
 # Aspectos gerais
 
 
@@ -130,7 +124,7 @@ A partir desses dados, constata-se uma desigual distribuição populacional. Tal
 #| message: false
 #| warning: false
 # análise descritiva
-pop_micro_sobral |> 
+tabela_descritiva_pop <- pop_micro_sobral |> 
   summarise(
     qde_municipios = n(),
     total_populacao = sum(populacao),
@@ -140,14 +134,30 @@ pop_micro_sobral |>
     valor_minimo = min(populacao),
     valor_maximo = max(populacao)
   )
+
+tabela_descritiva_pop <- tabela_descritiva_pop |> 
+  pivot_longer(
+    cols = everything(),
+    names_to = "Estatística",
+    values_to = "Valor"
+  )
+
+kable(
+  tabela_descritiva_pop,
+  format = "html",  # pode trocar pra "markdown" se for usar no RMarkdown
+  digits = 2,
+  caption = "Tabela 1\nEstatísticas descritivas da população dos municípios da microrregião de Sobral."
+)
+
+
 ```
 
-```{r}
+```{r tabelas}
 #| message: false
 #| warning: false
 #| echo: false
-#| label: Gráfico de coluna
 
+#gráfico de colunas
 gra_col <- pop_micro_sobral |> 
   mutate(populacao_formatada = format(populacao, big.mark = ".", decimal.mark = ",")) |> 
   ggplot(
@@ -182,6 +192,7 @@ gra_col_int <- ggplotly(gra_col, tooltip = "text") |>
          ))
 gra_col_int
 ```
+
 ```{r}
 #| echo: false
 mortes <- sum(mort_nascidos_vivos_micro_sobral$mortes)
