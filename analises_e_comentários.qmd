@@ -26,7 +26,6 @@ library(ggrepel)
 library(viridis)
 library(knitr)
 library(tidyr)
-library(knitr)
 ```
 
 ```{r importacao_dados}
@@ -48,7 +47,7 @@ mort_nascidos_vivos_micro_sobral <- read_csv2("data/mort_e_nascidosvivos_micro_s
 equipamentos <- read_csv2("data/equipamentos_limpo.csv")
 
 #idade e sexo
-pop_idade_sexo <- read.csv("data/pop_sexo_idade - Página1.csv",stringsAsFactors = FALSE)
+  pop_idade_sexo <- read.csv("data/pop_idade_sexo - Página1.csv")
 ```
 
 ```{r tratamento_dos_dados}
@@ -88,13 +87,10 @@ mort_nascidos_vivos_micro_sobral |>
   )
 
 # idade e sexo
+pop_idade_sexo$indice_envelhecimento <- gsub(",", ".", pop_idade_sexo$indice_envelhecimento)
 # porcentagem de cada faixa etária nos municípios
 pop_idade_sexo <- pop_idade_sexo |>
   mutate(
-    jovens_total = as.numeric(jovens_total),
-    idosos_total = as.numeric(idosos_total),
-    pop_ativa_total = as.numeric(pop_ativa_total),
-    pop_total = as.numeric(pop_total),
     perc_jovens = round((jovens_total/pop_total)*100, 2),
     perc_ativos = round((pop_ativa_total/pop_total)*100, 2),
     perc_idosos = round((idosos_total/pop_total)*100, 2)
