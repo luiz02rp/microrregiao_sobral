@@ -301,6 +301,11 @@ relacao_sobral_regiao <- label_percent(accuracy = 0.1)(relacao_sobral_regiao)
 
 Quanto à sua distribuição por município, observa-se uma predominância em Sobral, o qual concentra `r equipamentos[[22, 31]]` deles. Tal número representa `r relacao_sobral_regiao` daquele total. 
 
+=> agrupar Ipu, Santa Quitéria
+=> agrupar de santana à meruoca
+=> agrupar de hidrolândia à moraújo
+=> fazer gráfico de colunas para representar a distribuição dos equipamentos. Variáveis: tipo de equipamento, cidade, quantidade
+
  
 
 
