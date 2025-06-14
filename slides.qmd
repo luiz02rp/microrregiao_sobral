@@ -5,7 +5,7 @@ lang: pt
 format: 
   revealjs:
     toc: false
-    slide-number: false
+    slide-number: true
     theme: simple
     emded-resourses: true
     incremental: false
@@ -98,21 +98,10 @@ descritiva_pop_micro_sobral <- pop_micro_sobral |>
 - Equipamentos de saúde
 
 ## Microrregião de Sobral
-::: {.columns}
-::: {.column width="40%"}
 
 - Microrregião composta por `r descritiva_pop_micro_sobral[1,1]` municípios
 - Sua população total é de `r format(descritiva_pop_micro_sobral[[1,2]], scientific = FALSE, big.mark = ".")` mil habitantes
 - Isso representa 39,2% da macrorregião norte e 7,133% do Ceará
-:::
-
-::: {.column width="60%"}
-
-<img src="imagens/capa.jpg" width="70%" style="float: right; margin-left: 50px;">
-
-:::
-
-
 
 ## Municípios
 ```{r}
