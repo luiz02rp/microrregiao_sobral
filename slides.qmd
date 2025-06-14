@@ -1,0 +1,99 @@
+---
+title: "Microrregião de Sobral"
+lang: pt
+format: 
+  revealjs:
+    toc: true
+    slide-number: true
+    theme: solarized
+    emded-resourses: true
+    incremental: true
+---
+```{r}
+#| include: false
+#| message: false
+#| warning: false
+
+library(tidyverse)
+library(janitor)
+library(sf)
+library(scales)
+library(geobr)
+library(readr)
+library(plotly)
+library(ggrepel)
+library(viridis)
+
+# chamando banco de dados
+# população do ceará
+ce_municipios <- read_municipality(code_muni = "CE", year = 2024)
+# população da micro sobral
+pop_micro_sobral <- read_csv2("data/pop_ce_censo_2022_limpo.csv")
+# mortalidade da micro sobral
+mort_nascidos_vivos_micro_sobral <- read_csv2("data/mort_e_nascidosvivos_micro_sobral.csv")
+```
+
+```{r}
+#| include: false
+#| message: false
+#| warning: false
+# tratamento dos dados
+# população dos municípios da micro sobral
+pop_micro_sobral <- pop_micro_sobral |> 
+  clean_names() |> 
+  as_tibble() |> 
+  mutate(
+    municipio = str_to_title(municipio),
+    populacao = as.numeric(populacao),
+    municipio = case_when(municipio == "Ipú" ~ "Ipu",
+                           TRUE ~ municipio)
+  ) |> 
+  select(municipio, populacao)
+   
+# juntando bancos de dados
+ce_municipios <- ce_municipios |> 
+  mutate(
+    name_muni = str_to_title(name_muni)) |> 
+  inner_join(pop_micro_sobral, by = c("name_muni" = "municipio"))
+```
+
+
+```{r}
+#| include: false
+#| message: false
+#| warning: false
+# tratando banco de número de mortos e nascidos vivos
+mort_nascidos_vivos_micro_sobral <- mort_nascidos_vivos_micro_sobral |> 
+  clean_names()
+
+descritiva_mort_nascidos <- mort_nascidos_vivos_micro_sobral |> 
+   summarise(
+    qde_morte_micro_sobral = sum(mort_nascidos_vivos_micro_sobral$mortes),
+    qde_nascidos_vivos_micro_sobral = sum(mort_nascidos_vivos_micro_sobral$nascidos_vivos)
+  )
+ 
+```
+
+```{r}
+#| include: false
+#| message: false
+#| warning: false
+# análise descritiva
+descritiva_pop_micro_sobral <- pop_micro_sobral |> 
+  summarise(
+    qde_municipios = n(),
+    total_populacao = sum(populacao),
+    media = mean(populacao),
+    mediana = median(populacao), 
+    desvio_padrao = sd(populacao),
+    valor_minimo = min(populacao),
+    valor_maximo = max(populacao)
+  )
+```
+
+# Microrregião de Sobral
+Caracterização geral
+
+# Descrição da região
+- Microrregião composta por `r descritiva_pop_micro_sobral[1,1]` municípios
+- Totalizam `r format(descritiva_pop_micro_sobral[[1,2]], scientific = FALSE, big.mark = ".")` mil habitantes
