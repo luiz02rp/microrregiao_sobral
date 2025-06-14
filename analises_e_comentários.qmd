@@ -23,6 +23,8 @@ library(readr)
 library(plotly)
 library(ggrepel)
 library(viridis)
+library(knitr)
+library(tidyr)
 ```
 
 ```{r}
@@ -36,6 +38,8 @@ ce_municipios <- read_municipality(code_muni = "CE", year = 2024)
 pop_micro_sobral <- read_csv2("data/pop_ce_censo_2022_limpo.csv")
 # mortalidade da micro sobral
 mort_nascidos_vivos_micro_sobral <- read_csv2("data/mort_e_nascidosvivos_micro_sobral.csv") 
+# equipamentos
+equipamentos <- read_csv2("data/equipamentos_limpo.csv")
 ```
 
 ```{r}
@@ -197,7 +201,7 @@ pop_mass <- number(pop_mass, big.mark = ".", decimal.mark = ",")
 ce_municipios |> 
   ggplot()+
   geom_sf(aes(fill = populacao), color = "white", size = 0.1) +
-  scale_fill_viridis_c(option = "plasma", labels = comma) +
+  scale_fill_viridis_c(option = "turbo", labels = comma) +
   labs(
     title = "Distribuição populacional da Microrregião de Sobral",
     fill = "População"
@@ -245,9 +249,59 @@ mort_nascidos_vivos_micro_sobral |>
  
 
 # Equipamentos
+```{r}
+#| echo: false
+
+# tratando banco de dados sobre equipamentos
+equipamentos <- equipamentos |>
+  clean_names() |> 
+  mutate(
+    across(where(is.numeric), ~replace_na(.x, 0))
+  ) |> 
+  slice(-25)
+```
 
 
+```{r}
+#| echo: false
+# descritiva dos equipamentos
+descritiva_equipamentos <- equipamentos |> 
+  summarise(
+    across(where(is.numeric), sum)
+  ) 
+```
+Há um total de `r descritiva_equipamentos[[1, 30]]` equipamentos registrados. Eles são distribuídos em 29 categorias, conforme a tabela abaixo demonstra:
 
+```{r}
+#| echo: false
+#| label: Equipamentos de saúde 
+
+# tabela com distribuição dos equipamentos
+tabela_descritiva_equipamentos <- descritiva_equipamentos |> 
+  pivot_longer(
+    cols = everything(),
+    names_to = "Equipamento", 
+    values_to = "Quantidade") 
+
+knitr::kable(
+  tabela_descritiva_equipamentos,
+  format = "html", 
+  caption = "Distribuição dos equipamentos"
+)
+```
+```{r}
+#| echo: false
+
+# operações para texto
+relacao_sobral_regiao <- equipamentos[[22, 31]] / tabela_descritiva_equipamentos[[30,2]]
+
+relacao_sobral_regiao <- label_percent(accuracy = 0.1)(relacao_sobral_regiao)
+ 
+```
+
+Quanto à sua distribuição por município, observa-se uma predominância em Sobral, o qual concentra `r equipamentos[[22, 31]]` deles. Tal número representa `r relacao_sobral_regiao` daquele total. 
+
+ 
 
 
 

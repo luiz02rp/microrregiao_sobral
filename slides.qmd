@@ -1,13 +1,14 @@
 ---
-title: "Microrregião de Sobral"
+title: "Análise da Microrregião de Sobral"
+subtitle: "Caracterização geral"
 lang: pt
 format: 
   revealjs:
-    toc: true
-    slide-number: true
-    theme: solarized
+    toc: false
+    slide-number: false
+    theme: simple
     emded-resourses: true
-    incremental: true
+    incremental: false
 ---
 ```{r}
 #| include: false
@@ -23,7 +24,8 @@ library(readr)
 library(plotly)
 library(ggrepel)
 library(viridis)
-
+library(knitr)
+library(kableExtra)
 # chamando banco de dados
 # população do ceará
 ce_municipios <- read_municipality(code_muni = "CE", year = 2024)
@@ -90,11 +92,39 @@ descritiva_pop_micro_sobral <- pop_micro_sobral |>
     valor_maximo = max(populacao)
   )
 ```
+## Roteiro
+- Microrregião de Sobral
+- Indicadores populacionais
+- Equipamentos de saúde
 
-# Microrregião de Sobral
-Caracterização geral
+## Microrregião de Sobral
+::: {.columns}
+::: {.column width="40%"}
 
-# Descrição da região
 - Microrregião composta por `r descritiva_pop_micro_sobral[1,1]` municípios
-- Totalizam `r format(descritiva_pop_micro_sobral[[1,2]], scientific = FALSE, big.mark = ".")` mil habitantes
-- 
+- Sua população total é de `r format(descritiva_pop_micro_sobral[[1,2]], scientific = FALSE, big.mark = ".")` mil habitantes
+- Isso representa 39,2% da macrorregião norte e 7,133% do Ceará
+:::
+
+::: {.column width="60%"}
+
+<img src="imagens/capa.jpg" width="70%" style="float: right; margin-left: 50px;">
+
+:::
+
+
+
+## Municípios
+```{r}
+#| echo: false
+# tabela com nome dos municípios
+matriz_municipios <- pop_micro_sobral |> 
+  arrange(municipio) |> 
+  pull(municipio) |> 
+  matrix(nrow = 6, ncol = 4, byrow = T)
+
+kable(matriz_municipios,
+      format = "html") |> 
+  kable_styling(font_size = 30)
+```
+
