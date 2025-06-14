@@ -97,3 +97,4 @@ Caracterização geral
 # Descrição da região
 - Microrregião composta por `r descritiva_pop_micro_sobral[1,1]` municípios
 - Totalizam `r format(descritiva_pop_micro_sobral[[1,2]], scientific = FALSE, big.mark = ".")` mil habitantes
+- 
