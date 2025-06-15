@@ -10,6 +10,9 @@ https://sidra.ibge.gov.br/tabela/9514
 - natalidade:
 https://www.saude.ce.gov.br/tabnet-ceara/sinasc/
 
+- equipamentos:
+https://datasus.saude.gov.br/cnes-estabelecimentos
+
 - mapa completo da regionalização por macrorregião
 
 
