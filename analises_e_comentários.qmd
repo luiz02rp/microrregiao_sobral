@@ -203,10 +203,6 @@ descritiva_equipamentos <- equipamentos |>
 
 A microrregião de Sobral é composta por 24 municípios. São eles: Alcântaras, Cariré, Catunda, Coreaú, Forquilha, Frecheirinha, Graça, Groaíras, Hidrolândia, Ipu, Irauçuba, Massapê, Meruoca, Moraújo, Mucambo, Pacujá, Pires Ferreira, Reriutaba, Santa Quitéria, Santana Do Acaraú, Senador Sá, Sobral, Uruoca e Varjota. Tais municípios totalizam 658.665 mil em termos populacionais o que representa 39,2% da população da macrorregião norte (1.679.525 milhões) e em torno de `r a` da população do Ceará (9.233.656 milhões) [@ibge_populacao_2025].
 
-Sobral constitui o mais populoso dentre eles com 215.286 mil habitantes. Ipu ocupa o segundo lugar nesse posto, com uma população estimada em 42.968 mil. Pacujá, por outro lado, tem a menor população que gira em torno de 6.345 mil habitantes [@ibge_populacao_2025].
-
-A partir desses dados, constata-se uma desigual distribuição populacional (M = `r média_micro_pop`, Me = `r mediana_micro_pop`, DP = `r dp_micro_pop`, Min = `r min`, Max = `r max`). Tal discrepância pode ser ilustrada logo ao se ater à diferença entre Ipu e Sobral, que é de 172.318. Quando se compara a maior cidade com o menor município (Pacujá), ainda em termos populacionais, a diferença sobe para 208.941.
-
 ```{r}
 #| message: false
 #| warning: false
@@ -235,6 +231,10 @@ kable(
 
 ```
 
+
+Sobral constitui o mais populoso dentre eles, com 215.286 mil habitantes. Ipu ocupa o segundo lugar nesse posto, com uma população estimada em 42.968 mil. Pacujá, por outro lado, tem a menor população que gira em torno de 6.345 mil habitantes [@ibge_populacao_2025]. O mapa abaixo procura expor essa distribuição.
+
+A partir desses dados, constata-se uma desigual distribuição populacional (M = `r média_micro_pop`, Me = `r mediana_micro_pop`, DP = `r dp_micro_pop`, Min = `r min`, Max = `r max`). Tal discrepância pode ser ilustrada logo ao se ater à diferença entre Ipu e Sobral, que é de 172.318. Quando se compara este ao menos município em termos populacionais (Pacujá), a diferença sobe para 208.941.
 
 ```{r}
 #| message: false
@@ -451,12 +451,11 @@ media_indice <- format(media_indice, big.mark = ".", decimal.mark = ",")
 ```
 
 
-Quanto à caracterização da faixa etária na microrregião (jovens, adultos e idosos), observa-se que os adultos estão em maior número (`r média_perc_adultos`). Esse resultado é semelhante à porcentagem para o Brasil (`r média_adultos_brasil`) e para o estado do Ceará (`r média_adultos_ceara`). O índice de envelhecimento (nº de idosos para cada 100 jovens), na microrregião (`r media_indice`) é inferior ao do Brasil (`r indice_brasil`), mas próximo do Ceará (`r indice_ceara`). Ainda assim, é um índice considerado alto [@ibge_populacao_genero_2025].
+Quanto à população predominante na microrregião (jovens, adultos e idosos), observa-se que os adultos estão em maior número (`r média_perc_adultos`). Esse resultado é semelhante à porcentagem para o Brasil (`r média_adultos_brasil`) e para o estado do Ceará (`r média_adultos_ceara`). O índice de envelhecimento (nº de idosos para cada 100 jovens), na microrregião (`r media_indice`), é inferior ao do Brasil (`r indice_brasil`), mas próximo do Ceará (`r indice_ceara`). Ainda assim, é um índice considerado alto [@ibge_populacao_genero_2025].
 
-Apesar do índice médio elevado, alguns municípios apresentam população expressivamente jovem. É o caso de Sobral (`r indice_sobral`), município mais populoso da área. A população jovem (`r jovens_sobral`) é quase o dobro da população idosa (`r idosos_sobral`). É importante salientar que Sobral é a sede a microrregião e que concentra mais da metade dos equipamentos deste. Uma vez que sua população é majoritariamente jovem, e uma vez que a população idosa costuma gerar maior demanda, deve haver um grande fluxo de referenciamento de cidades circunvizinhas. Como a tabela demonstra, municípios ao redor ou distantes de Sobral tendem a apresentar um percentual maior de população idosa.
+Embora o índice de envelhecimento da microrregião seja relativamente alto, alguns municípios apresentam população expressivamente jovem. É o caso de Sobral , município mais populoso da área, que conta com um índice de `r indice_sobral`. A população jovem, em `r jovens_sobral`, é quase o dobro da população idosa (`r idosos_sobral`). É importante salientar que Sobral é a sede a microrregião e concentra mais da metade dos equipamentos deste. Uma vez que sua população é majoritariamente jovem, e uma vez que a população idosa costuma gerar maior demanda, deve haver um grande fluxo de referenciamento de cidades circunvizinhas. Como a tabela demonstra, municípios ao redor ou distantes de Sobral tendem a apresentar um percentual maior de população idosa.
 
 Quando se realiza o recorte de gênero, nota-se que não há uma grande discrepância entre o quantitativo de homens (49%) e mulheres (51%) na microrregião de sobral. 
-
 
 ```{r}
 #| label: carregar-dados
@@ -531,11 +530,11 @@ pop_mass <- number(pop_mass, big.mark = ".", decimal.mark = ",")
 
 # Natalidade e mortalidade
 
-A microrregião de Sobral de 2024 a 2025 registrou `r mortes` mil mortes e `r vivos` mil nascidos vivos. Entre os municípios, Sobral lidera em número de mortos (`r mortes_sobral` mil) e de nascidos vivos (`r vivos_sobral`). Ipú, por sua vez, figura como segundo, com `r mortes_ipu` mortos e `r vivos_ipu` nascidos vivos. Pacujá, por outro lado, registrou `r mortes_pacuja` mortes e `r vivos_pacuja` nascidos vivos. Observa-se, portanto, que essas duas informações - nascidos vivos e número de mortos - em geral acaba seguindo aquela lista dos mais populosos para os com menos habitantes [@saude_ce_mortalidade_2025; @saude_ce_natalidade_2025].
+A microrregião de Sobral, de 2024 a 2025, registrou `r mortes` mil mortes e `r vivos` mil nascidos vivos. Entre os municípios, Sobral lidera em número de mortos (`r mortes_sobral` mil) e de nascidos vivos (`r vivos_sobral` mil). Ipú, por sua vez, figura como segundo, com `r mortes_ipu` mortos e `r vivos_ipu` nascidos vivos. Pacujá, por outro lado, registrou `r mortes_pacuja` mortes e `r vivos_pacuja` nascidos vivos. Observa-se, portanto, que essas duas informações - nascidos vivos e número de mortos - nascidos vivos e número de mortos -, em geral, aparenta estar positivamente correlacionada ao número de habitantes [@saude_ce_mortalidade_2025; @saude_ce_natalidade_2025].
 
 Uma diferença que vale ser mencionada é que, embora Santa Quitéria seja o terceiro mais populoso, ela perde para Massapê nesses números, embora por um diferença muito pequena. São cidades com um quantitativo populacional próximo também: Santa Quitéria com `r pop_sq` e Massapê com `r pop_mass`, como estava expresso no gráfico anterior [@ibge_populacao_2025]
 
-Em razão dessa grande quantidade de nascidos vivos e mortes em Sobral, esperamos que essa cidade concentre um quantitativo maior de equipamentos de saúde; enquanto Pacujá sofra o efeito contrário e que esse padrão se repita para os outros municípios.
+Em razão da grande quantidade de nascidos vivos e mortes em Sobral, esperamos que essa cidade concentre um quantitativo maior de equipamentos de saúde. Hipotetizamos, também, que Pacujá concetre menos. O padrão especulado é que, quanto maior a população de um município, mais equipamentos este possuirá. O gráfico de dispersão abaixo corrobora essa hipótese.
 
 ```{r}
 #| label: "gráfico de dispersão com nascidos vivos por mortos em cada município"
