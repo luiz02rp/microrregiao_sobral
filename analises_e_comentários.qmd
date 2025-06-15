@@ -236,6 +236,34 @@ kable(
 ```
 
 
+```{r}
+#| message: false
+#| warning: false
+#| echo: false
+#| label: "Mapa de Calor Hierárquico"
+
+
+pal <- colorNumeric("viridis", domain = ce_municipios$populacao)
+
+leaflet(ce_municipios) %>%
+  addTiles() %>%
+  addPolygons(
+    fillColor = ~pal(populacao),
+    weight = 1,
+    color = "white",
+    fillOpacity = 0.7,
+    label = lapply(
+      paste0(
+        "<b>Município:</b> ", ce_municipios$name_muni, "<br>",
+        "<b>População:</b> ", format(ce_municipios$populacao, big.mark = ".", decimal.mark = ",")
+      ),
+      htmltools::HTML
+    )
+  )
+
+```
+
+
 ```{r tabelas}
 #| message: false
 #| warning: false
@@ -276,34 +304,6 @@ gra_col_int <- ggplotly(gra_col, tooltip = "text") |>
            title = list(standoff = 10)
          ))
 gra_col_int
-```
-
-
-```{r}
-#| message: false
-#| warning: false
-#| echo: false
-#| label: "Mapa de Calor Hierárquico"
-
-
-pal <- colorNumeric("viridis", domain = ce_municipios$populacao)
-
-leaflet(ce_municipios) %>%
-  addTiles() %>%
-  addPolygons(
-    fillColor = ~pal(populacao),
-    weight = 1,
-    color = "white",
-    fillOpacity = 0.7,
-    label = lapply(
-      paste0(
-        "<b>Município:</b> ", ce_municipios$name_muni, "<br>",
-        "<b>População:</b> ", format(ce_municipios$populacao, big.mark = ".", decimal.mark = ",")
-      ),
-      htmltools::HTML
-    )
-  )
-
 ```
 
 
