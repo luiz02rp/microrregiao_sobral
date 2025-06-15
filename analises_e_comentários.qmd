@@ -7,7 +7,6 @@ format:
     number-sections: true
     toc-depth: 2
     embed-resources: true
-    citation-abbreviations: "true"
 bibliography: referencias.bib
 csl: apa.csl
 link-citations: true
