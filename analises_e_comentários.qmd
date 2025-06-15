@@ -307,69 +307,6 @@ gra_col_int
 ```
 
 
-# Equipamentos
-
-Há um total de `r descritiva_equipamentos[[1, 30]]` equipamentos registrados. Eles são distribuídos em 29 categorias, conforme a tabela abaixo demonstra:
-
-```{r}
-#| echo: false
-#| label: Equipamentos de saúde 
-
-# tabela com distribuição dos equipamentos
-tabela_descritiva_equipamentos <- descritiva_equipamentos |> 
-  pivot_longer(
-    cols = everything(),
-    names_to = "Equipamento", 
-    values_to = "Quantidade") 
-
-knitr::kable(
-  tabela_descritiva_equipamentos,
-  format = "html", 
-  caption = "Distribuição dos equipamentos"
-)
-```
-
-```{r}
-#| echo: false
-
-# operações para texto
-# sobral
-relacao_sobral_regiao <- equipamentos[[22, 31]] / tabela_descritiva_equipamentos[[30,2]]
-
-relacao_sobral_regiao <- label_percent(accuracy = 0.1)(relacao_sobral_regiao)
-# ipu e santa quitéria
-relacao_ipu_sq_regiao <- equipamentos[[10, 31]] + equipamentos[[20, 31]]
-relacao_ipu_sq_regiao <- relacao_ipu_sq_regiao / tabela_descritiva_equipamentos[[30,2]]
-
-relacao_ipu_sq_regiao <- label_percent(accuracy = 0.1)(relacao_ipu_sq_regiao)
-# Santana à Meruoca
-relacao_santana_a_meruoca_regiao <- equipamentos |> 
-  filter(municipio %in% c("SANTANA DO ACARAU", "MASSAPE", "VARJOTA", "FORQUILHA", "IRAUCUBA", "RERIUTABA", "MERUOCA")) |> 
-  summarise(soma = sum(total, na.rm = T)) |> 
-  pull()
-
-total_geral <- sum(equipamentos$total, na.rm = T)
-
-relacao_santana_a_meruoca_regiao <- percent(relacao_santana_a_meruoca_regiao/ total_geral, accuracy = 0.1)
-
-# Hidrolândia à Moraújo
-relacao_hidro_a_moraujo_regiao <- equipamentos |> 
-  select(municipio, total) |> 
-  arrange(total) |> 
-  slice(1:14) |> 
-  summarise(soma = sum(total, na.rm = T)) |> 
-  pull()
-
-relacao_hidro_a_moraujo_regiao <- percent(relacao_hidro_a_moraujo_regiao/total_geral, accuracy = 0.1)
-
-```
-
-Quanto à sua distribuição por município, observa-se uma predominância em Sobral, o qual concentra `r equipamentos[[22, 31]]` deles. Tal número representa `r relacao_sobral_regiao` daquele total. Quando comparado com Ipu (48 dispositivos), há uma diferença expressiva de `r equipamentos[[22, 31]] - equipamentos[[10, 31]]`. Entretanto, não se vê uma discrepância desse nível entre Ipu e Santa Quitéria, que é a terceira cidade com maior quantidade desses estabelecimentos (`r equipamentos[[20, 31]]`). Juntas, essas duas cidades representam `r relacao_ipu_sq_regiao` [@datasus_cnes_2025].
-
-Em seguida vêm Santana do Acaraú (`r equipamentos[[19, 31]]`), Massapê (`r equipamentos[[12, 31]]`), Varjota (`r equipamentos[[24, 31]]`), Forquilha (`r equipamentos[[5, 31]]`), Irauçuba (`r equipamentos[[11, 31]]`), Reriutaba (`r equipamentos[[18, 31]]`), Meruoca (`r equipamentos[[13, 31]]`). As sete cidades compõem `r relacao_santana_a_meruoca_regiao` do total de equipamentos. Os demais municípios variam entre 20 a 11 quanto a esse número, sendo representante de `r relacao_hidro_a_moraujo_regiao` na região analisada. Seus municípios individuais são: Hidrolândia (`r equipamentos[[9, 31]]`), Groaíras (`r equipamentos[[8, 31]]`), Frecheirinha (`r equipamentos[[6, 31]]`), Coreaú (`r equipamentos[[4, 31]]`), Cariré (`r equipamentos[[2, 31]]`), Uruoca (`r equipamentos[[23, 31]]`), Graça (`r equipamentos[[7, 31]]`), Mucambo (`r equipamentos[[15, 31]]`), Alcântaras (`r equipamentos[[1, 31]]`), Catunda (`r equipamentos[[3, 31]]`), Pires Ferreira (`r equipamentos[[17, 31]]`), Pacujá (`r equipamentos[[16, 31]]`), Senador Sá (`r equipamentos[[21, 31]]`), Moraújo (`r equipamentos[[14, 31]]`).
-
-![Distribuição de equipamentos por município e tipo](distribuicao_equipamentos.png)
-
 # Gênero e faixa etária
 
 ```{r}
@@ -633,6 +570,69 @@ kable(
   caption = "Ocorrência e residência nos dados sobre mortalidade e natalidade"
 )
 ```
+
+# Equipamentos
+
+Há um total de `r descritiva_equipamentos[[1, 30]]` equipamentos registrados. Eles são distribuídos em 29 categorias, conforme a tabela abaixo demonstra:
+
+```{r}
+#| echo: false
+#| label: Equipamentos de saúde 
+
+# tabela com distribuição dos equipamentos
+tabela_descritiva_equipamentos <- descritiva_equipamentos |> 
+  pivot_longer(
+    cols = everything(),
+    names_to = "Equipamento", 
+    values_to = "Quantidade") 
+
+knitr::kable(
+  tabela_descritiva_equipamentos,
+  format = "html", 
+  caption = "Distribuição dos equipamentos"
+)
+```
+
+```{r}
+#| echo: false
+
+# operações para texto
+# sobral
+relacao_sobral_regiao <- equipamentos[[22, 31]] / tabela_descritiva_equipamentos[[30,2]]
+
+relacao_sobral_regiao <- label_percent(accuracy = 0.1)(relacao_sobral_regiao)
+# ipu e santa quitéria
+relacao_ipu_sq_regiao <- equipamentos[[10, 31]] + equipamentos[[20, 31]]
+relacao_ipu_sq_regiao <- relacao_ipu_sq_regiao / tabela_descritiva_equipamentos[[30,2]]
+
+relacao_ipu_sq_regiao <- label_percent(accuracy = 0.1)(relacao_ipu_sq_regiao)
+# Santana à Meruoca
+relacao_santana_a_meruoca_regiao <- equipamentos |> 
+  filter(municipio %in% c("SANTANA DO ACARAU", "MASSAPE", "VARJOTA", "FORQUILHA", "IRAUCUBA", "RERIUTABA", "MERUOCA")) |> 
+  summarise(soma = sum(total, na.rm = T)) |> 
+  pull()
+
+total_geral <- sum(equipamentos$total, na.rm = T)
+
+relacao_santana_a_meruoca_regiao <- percent(relacao_santana_a_meruoca_regiao/ total_geral, accuracy = 0.1)
+
+# Hidrolândia à Moraújo
+relacao_hidro_a_moraujo_regiao <- equipamentos |> 
+  select(municipio, total) |> 
+  arrange(total) |> 
+  slice(1:14) |> 
+  summarise(soma = sum(total, na.rm = T)) |> 
+  pull()
+
+relacao_hidro_a_moraujo_regiao <- percent(relacao_hidro_a_moraujo_regiao/total_geral, accuracy = 0.1)
+
+```
+
+Quanto à sua distribuição por município, observa-se uma predominância em Sobral, o qual concentra `r equipamentos[[22, 31]]` deles. Tal número representa `r relacao_sobral_regiao` daquele total. Quando comparado com Ipu (48 dispositivos), há uma diferença expressiva de `r equipamentos[[22, 31]] - equipamentos[[10, 31]]`. Entretanto, não se vê uma discrepância desse nível entre Ipu e Santa Quitéria, que é a terceira cidade com maior quantidade desses estabelecimentos (`r equipamentos[[20, 31]]`). Juntas, essas duas cidades representam `r relacao_ipu_sq_regiao` [@datasus_cnes_2025].
+
+Em seguida vêm Santana do Acaraú (`r equipamentos[[19, 31]]`), Massapê (`r equipamentos[[12, 31]]`), Varjota (`r equipamentos[[24, 31]]`), Forquilha (`r equipamentos[[5, 31]]`), Irauçuba (`r equipamentos[[11, 31]]`), Reriutaba (`r equipamentos[[18, 31]]`), Meruoca (`r equipamentos[[13, 31]]`). As sete cidades compõem `r relacao_santana_a_meruoca_regiao` do total de equipamentos. Os demais municípios variam entre 20 a 11 quanto a esse número, sendo representante de `r relacao_hidro_a_moraujo_regiao` na região analisada. Seus municípios individuais são: Hidrolândia (`r equipamentos[[9, 31]]`), Groaíras (`r equipamentos[[8, 31]]`), Frecheirinha (`r equipamentos[[6, 31]]`), Coreaú (`r equipamentos[[4, 31]]`), Cariré (`r equipamentos[[2, 31]]`), Uruoca (`r equipamentos[[23, 31]]`), Graça (`r equipamentos[[7, 31]]`), Mucambo (`r equipamentos[[15, 31]]`), Alcântaras (`r equipamentos[[1, 31]]`), Catunda (`r equipamentos[[3, 31]]`), Pires Ferreira (`r equipamentos[[17, 31]]`), Pacujá (`r equipamentos[[16, 31]]`), Senador Sá (`r equipamentos[[21, 31]]`), Moraújo (`r equipamentos[[14, 31]]`).
+
+![Distribuição de equipamentos por município e tipo](distribuicao_equipamentos.png)
 
 
 # Conclusões
