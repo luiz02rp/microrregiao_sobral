@@ -313,7 +313,7 @@ ce_municipios |>
 
 ## Natalidade e mortalidade
 
-A microrrgião de Sobral de 2024 a 2025 registrou `r mortes` mil mortes e `r vivos` mil nascidos vivos.Entre os municípios, Sobral lidera em número de mortos (`r mortes_sobral` mil) e de nascidos vivos (`r vivos_sobral`). Ipú, por sua vez, figura como segundo, com `r mortes_ipu` mortos e `r vivos_ipu` nascidos vivos. Pacujá, por outro lado, registrou `r mortes_pacuja` mortes e `r vivos_pacuja` nascidos vivos. Observa-se, portanto, que essas duas informações - nascidos vivos e número de mortos - em geral acaba seguindo aquela lista dos mais populosos para os com menos habitantes [@saude_ce_mortalidade_2025; @saude_ce_natalidade_2025].
+A microrregião de Sobral de 2024 a 2025 registrou `r mortes` mil mortes e `r vivos` mil nascidos vivos.Entre os municípios, Sobral lidera em número de mortos (`r mortes_sobral` mil) e de nascidos vivos (`r vivos_sobral`). Ipú, por sua vez, figura como segundo, com `r mortes_ipu` mortos e `r vivos_ipu` nascidos vivos. Pacujá, por outro lado, registrou `r mortes_pacuja` mortes e `r vivos_pacuja` nascidos vivos. Observa-se, portanto, que essas duas informações - nascidos vivos e número de mortos - em geral acaba seguindo aquela lista dos mais populosos para os com menos habitantes [@saude_ce_mortalidade_2025; @saude_ce_natalidade_2025].
 
 Uma diferença que vale ser mencionada é que, embora Santa Quitéria seja o terceiro mais populoso, ela perde para Massapê nesses números, embora por um diferença muito pequena. São cidades com um quantitativo populacional próximo também: Santa Quitéria com `r pop_sq` e Massapê com `r pop_mass`, como estava expresso no gráfico anterior [@ibge_populacao_2025]
 
