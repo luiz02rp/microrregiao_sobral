@@ -39,10 +39,10 @@ library(sf)
 ```
 
 ```{r}
-#| include: false
+#| label: Importação
 #| message: false
 #| warning: false
-#| label: "Importação"
+#| include: false
 # chamando banco de dados
 
 # população do ceará
@@ -167,6 +167,19 @@ tabela_descritiva_pop <- pop_micro_sobral |>
     "Valor máximo" = max(populacao)
   )
 
+média_micro_pop <- tabela_descritiva_pop$Média
+dp_micro_pop <- tabela_descritiva_pop$`Desvio padrão`
+mediana_micro_pop <- tabela_descritiva_pop$Mediana
+min <- tabela_descritiva_pop$`Valor mínimo`
+max <- tabela_descritiva_pop$`Valor máximo`
+
+média_micro_pop <- format(média_micro_pop, big.mark = ".", decimal.mark = ",")
+dp_micro_pop <- format(dp_micro_pop, big.mark = ".", decimal.mark = ",")
+mediana_micro_pop <- format(mediana_micro_pop, big.mark = ".", decimal.mark = ",")
+min <- format(min, big.mark = ".", decimal.mark = ",")
+max <- format(max, big.mark = ".", decimal.mark = ",")
+
+
 # análise descritiva dos equipamentos
 
 descritiva_equipamentos <- equipamentos |> 
@@ -189,7 +202,7 @@ A microrregião de Sobral é composta por 24 municípios. São eles: Alcântaras
 
 Sobral constitui o mais populoso dentre eles com 215.286 mil habitantes. Ipu o segundo lugar nesse posto com uma poulação estimada em 42.968 mil. Pacujá, por outro lado, tem a menor população que gira em torno de 6.345 mil habitantes [@ibge_populacao_2025].
 
-A partir desses dados, constata-se uma desigual distribuição populacional. Tal discrepância pode ser verificada ao se ater à diferença já entre Ipú e Sobral que é de 172.318. Quando comparado com o menor município em termos populacionais (Pacujá), a diferença sobe para 208.941.
+A partir desses dados, constata-se uma desigual distribuição populacional [M = (`r média_micro_pop`), DP = (`r dp_micro_pop`), Me = (`r mediana_micro_pop`), Min = (`r min`), Max = (`r max`). Tal discrepância pode ser verificada ao se ater à diferença já entre Ipú e Sobral que é de 172.318. Quando comparado com o menor município em termos populacionais (Pacujá), a diferença sobe para 208.941.
 
 ```{r}
 #| message: false
@@ -218,115 +231,6 @@ kable(
 )
 
 ```
-
-
-# Gênero e faixa etária
-
-```{r}
-names(pop_idade_sexo)[1] <- "localidade"
-municipios_sobral <- c(
-  "ALCANTARAS", "CARIRE", "CATUNDA", "COREAU", "FORQUILHA", "FRECHEIRINHA", 
-  "GRACA", "GROAIRAS", "HIDROLANDIA", "IPU", "IRAUCUBA", "MASSAPE", 
-  "MERUOCA", "MORAUJO", "MUCAMBO", "PACUJA", "PIRES FERREIRA", "RERIUTABA", 
-  "SANTA QUITERIA", "SANTANA DO ACARAU", "SENADOR SA", "SOBRAL", "URUOCA", "VARJOTA"
-)
-pop_idade_sobral <- pop_idade_sexo |>
-  filter(localidade %in% municipios_sobral)
-
-perc_adultos <- pop_idade_sobral |>
-  summarise(
-    "Média" = mean(perc_ativos, na.rm = TRUE),
-    "Mediana" = median(perc_ativos, na.rm = TRUE),
-    "Desvio padrão" = sd(perc_ativos, na.rm = TRUE),
-    "Mínimo" = min(perc_ativos, na.rm = TRUE),
-    "Máximo" = max(perc_ativos, na.rm = TRUE)
-  )
-
-média_perc_adultos <- round(perc_adultos$Média, 2)
-
-média_adultos_brasil <- pop_idade_sexo |>
-  filter(localidade == "BRASIL") |>
-  pull("perc_ativos")
-
-média_adultos_ceara <- pop_idade_sexo |>
-  filter(localidade == "CEARÁ") |>
-  pull("perc_ativos")
-
-pop_idade_sobral <- pop_idade_sobral |>
-  mutate(indice_envelhecimento = as.numeric(indice_envelhecimento))
-
-indice_env_sobral <- pop_idade_sobral |>
-  summarise(
-    "Média" = mean(indice_envelhecimento, na.rm = TRUE),
-    "Mediana" = median(indice_envelhecimento, na.rm = TRUE),
-    "Desvio padrão" = sd(indice_envelhecimento, na.rm = TRUE),
-    "Mínimo" = min(indice_envelhecimento, na.rm = TRUE),
-    "Máximo" = max(indice_envelhecimento, na.rm = TRUE)
-  )
-
-media_indice <- indice_env_sobral$Média
-indice_brasil <- pop_idade_sexo |>
-  filter(localidade == "BRASIL") |>
-  pull("indice_envelhecimento")
-
-indice_ceara <- pop_idade_sexo |>
-  filter(localidade == "CEARÁ") |>
-  pull("indice_envelhecimento")
-
-indice_sobral <- pop_idade_sexo |>
-  filter(localidade == "SOBRAL") |>
-  pull("indice_envelhecimento")
-
-jovens_sobral <-pop_idade_sexo |>
-  filter(localidade == "SOBRAL") |>
-  pull("jovens_total")
-
-idosos_sobral <- pop_idade_sexo|>
-  filter(localidade == "SOBRAL") |>
-  pull("idosos_total")
-```
-
-
-Quanto à população predominante na microrregião (jovens, adultos e idosos), observa-se que os adultos estão em maior número (`r média_perc_adultos`). Esse resultado é semelhante à porcentagem para o Brasil (`r média_adultos_brasil`) e para o estado do Ceará (`r média_adultos_ceara`). O índice de envelhecimento (nº de idosos para cada 100 jovens), na microrregião, é de (`r media_indice`). Para o Brasil e o Ceará, o índice é, respectivamente: (`r indice_brasil`) e  e (`r indice_ceara`), o que demonstra que o envelhecimento é levemente inferior ao observado no Brasil como um todo.
-
-Embora o índice de envelhecimento da microrregião seja relativamente alto, alguns municípios apresentam população expressivamente jovem. É o caso de Sobral, município mais populoso da área, que conta com um índice de (`r indice_sobral`). A população jovem, em (`r jovens_sobral`) é quase o dobro da população idosa (`r idosos_sobral`). Isso é relevante pois Sobral é a sede a microrregião e concentra mais da metade dos equipamentos. Uma vez que sua população é majoritariamente jovem, a população idosa, que costuma gerar maior demanda, deve partir das cidades circunvizinhas. Como a tabela demonstra, municípios ao redor ou distantes de Sobral tendem a ter um percentual maior de população idosa.
-
-```{r}
-#| label: carregar-dados
-#| echo: false
-#| message: false
-#| warning: false
-
-tabela_pop_desc <- pop_idade_sexo |>
-  select(
-    localidade,
-    pop_total,
-    perc_ativos,
-    perc_jovens,
-    perc_idosos
-  )
-
-tabela_pop_desc <- tabela_pop_desc |>
-  mutate(across(
-    where(is.numeric),
-    ~ format(.x, 
-             big.mark = ".", 
-             decimal.mark = ",", 
-             scientific = FALSE,
-             nsmall = 2)  # 2 casas decimais
-  ))
-
-
-kable(
-  tabela_pop_desc,
-  format = "html", 
-  caption = "População e distribuição por faixa etária"
-)
-
-```
-
-
-Quando se realiza o recorte de gênero, nota-se que não há uma grande discrepância entre o quantitativo de homens (49%) e mulheres (51%) na microrregião de sobral. 
 
 
 ```{r tabelas}
@@ -371,40 +275,6 @@ gra_col_int <- ggplotly(gra_col, tooltip = "text") |>
 gra_col_int
 ```
 
-```{r}
-#| echo: false
-#| label: "Variáveis para texto"
-mortes <- sum(mort_nascidos_vivos_micro_sobral$mortes)
-vivos <- sum(mort_nascidos_vivos_micro_sobral$nascidos_vivos)
-# sobral
-mortes_sobral <- mort_nascidos_vivos_micro_sobral[[22, 2]]
-vivos_sobral <- mort_nascidos_vivos_micro_sobral[[22, 3]]
-# ipu
-mortes_ipu <- mort_nascidos_vivos_micro_sobral[[10, 2]]
-vivos_ipu <- mort_nascidos_vivos_micro_sobral[[10, 3]]
-# pacujá
-mortes_pacuja <- mort_nascidos_vivos_micro_sobral[[16, 2]]
-vivos_pacuja <- mort_nascidos_vivos_micro_sobral[[16, 3]]
-
-## formatar para texto
-# geral
-mortes <- number(mortes, big.mark = ".", decimal.mark = ",")
-vivos <- number(vivos, big.mark = ".", decimal.mark = ",")
-# sobral
-mortes_sobral <- number(mortes_sobral, big.mark = ".", decimal.mark = ",")
-vivos_sobral <- number(vivos_sobral, big.mark = ".", decimal.mark = ",")
-# ipu
-mortes_ipu <- number(mortes_ipu, big.mark = ".", decimal.mark = ",")
-vivos_ipu <- number(vivos_ipu, big.mark = ".", decimal.mark = ",")
-
-## informações populacionais
-# Santa Quitéria
-pop_sq <- pop_micro_sobral[[20, 2]]
-pop_sq <- number(pop_sq, big.mark = ".", decimal.mark = ",")
-# Massapê
-pop_mass <- pop_micro_sobral[[12, 2]]
-pop_mass <- number(pop_mass, big.mark = ".", decimal.mark = ",")
-```
 
 ```{r}
 #| message: false
@@ -433,43 +303,6 @@ leaflet(ce_municipios) %>%
 
 ```
 
-## Natalidade e mortalidade
-
-A microrregião de Sobral de 2024 a 2025 registrou `r mortes` mil mortes e `r vivos` mil nascidos vivos.Entre os municípios, Sobral lidera em número de mortos (`r mortes_sobral` mil) e de nascidos vivos (`r vivos_sobral`). Ipú, por sua vez, figura como segundo, com `r mortes_ipu` mortos e `r vivos_ipu` nascidos vivos. Pacujá, por outro lado, registrou `r mortes_pacuja` mortes e `r vivos_pacuja` nascidos vivos. Observa-se, portanto, que essas duas informações - nascidos vivos e número de mortos - em geral acaba seguindo aquela lista dos mais populosos para os com menos habitantes [@saude_ce_mortalidade_2025; @saude_ce_natalidade_2025].
-
-Uma diferença que vale ser mencionada é que, embora Santa Quitéria seja o terceiro mais populoso, ela perde para Massapê nesses números, embora por um diferença muito pequena. São cidades com um quantitativo populacional próximo também: Santa Quitéria com `r pop_sq` e Massapê com `r pop_mass`, como estava expresso no gráfico anterior [@ibge_populacao_2025]
-
-Em razão dessa grande quantidade de nascidos vivos e mortes em Sobral, esperamos que essa cidade concentre um quantitativo maior de equipamentos de saúde; enquanto Pacujá sofra o efeito contrário e que esse padrão se repita para os outros municípios.
-
-```{r}
-#| label: "gráfico de dispersão com nascidos vivos por mortos em cada município"
-#| echo: false
-#| warning: false
-#| message: false
-mort_nascidos_vivos_micro_sobral |> 
-  ggplot(
-    aes(x = nascidos_vivos, y = mortes)
-  )+
-  geom_point(color = "black", size = 2) +
-  geom_text_repel(
-    data = subset(mort_nascidos_vivos_micro_sobral, municipio %in% c("Sobral", "Ipu", "Massapê", "Santa Quitéria", "Pacujá")),
-    aes(label = municipio),
-    size = 3
-  )+
-  labs(
-    title = "Relação entre nascidos vivos e mortos por município",
-    x = "Nascidos vivos",
-    y = "Mortes"
-  )+
-  theme_minimal()+
-  theme(
-    plot.title = element_text(size = 14, face = "bold"),
-    axis.title = element_text(size = 12)
-  )+
-  scale_x_log10()+
-  scale_y_log10()+
-  scale_color_viridis_d()
-```
 
 # Equipamentos
 
@@ -537,6 +370,202 @@ Em seguida vêm Santana do Acaraú (`r equipamentos[[19, 31]]`), Massapê (`r eq
 Portanto, observa-se que a distribuição dos equipamentos acompanha aquela tendência populacional assim como a relação entre nascidos vivos e mortes. Sobral lidera todos esses indicativos, sendo seguido por Ipú, embora esta tenha indicadores muito distantes em relação à Sobral. Entretanto, quando comparada com Santa Quitéria, Santana do Acaraú ou Massapê, não se constata uma diferença tão expressiva quanto à Sobral. Na outro extremo, pacujá segue a tendência a acompanhar os menores números e, especificamente quanto ao número de equipamentos, Moraújo e Senador Sá apresentam menos, mas é diferença é de apenas 1.
 
 =\> fazer gráfico de colunas para representar a distribuição dos equipamentos. Variáveis: tipo de equipamento, cidade, quantidade
+
+# Gênero e faixa etária
+
+```{r}
+names(pop_idade_sexo)[1] <- "localidade"
+municipios_sobral <- c(
+  "ALCANTARAS", "CARIRE", "CATUNDA", "COREAU", "FORQUILHA", "FRECHEIRINHA", 
+  "GRACA", "GROAIRAS", "HIDROLANDIA", "IPU", "IRAUCUBA", "MASSAPE", 
+  "MERUOCA", "MORAUJO", "MUCAMBO", "PACUJA", "PIRES FERREIRA", "RERIUTABA", 
+  "SANTA QUITERIA", "SANTANA DO ACARAU", "SENADOR SA", "SOBRAL", "URUOCA", "VARJOTA"
+)
+pop_idade_sobral <- pop_idade_sexo |>
+  filter(localidade %in% municipios_sobral)
+
+perc_adultos <- pop_idade_sobral |>
+  summarise(
+    "Média" = mean(perc_ativos, na.rm = TRUE),
+    "Mediana" = median(perc_ativos, na.rm = TRUE),
+    "Desvio padrão" = sd(perc_ativos, na.rm = TRUE),
+    "Mínimo" = min(perc_ativos, na.rm = TRUE),
+    "Máximo" = max(perc_ativos, na.rm = TRUE)
+  )
+
+média_perc_adultos <- round(perc_adultos$Média, 2)
+
+média_adultos_brasil <- pop_idade_sexo |>
+  filter(localidade == "BRASIL") |>
+  pull("perc_ativos")
+
+média_adultos_ceara <- pop_idade_sexo |>
+  filter(localidade == "CEARÁ") |>
+  pull("perc_ativos")
+
+pop_idade_sobral <- pop_idade_sobral |>
+  mutate(indice_envelhecimento = as.numeric(indice_envelhecimento))
+
+indice_env_sobral <- pop_idade_sobral |>
+  summarise(
+    "Média" = mean(indice_envelhecimento, na.rm = TRUE),
+    "Mediana" = median(indice_envelhecimento, na.rm = TRUE),
+    "Desvio padrão" = sd(indice_envelhecimento, na.rm = TRUE),
+    "Mínimo" = min(indice_envelhecimento, na.rm = TRUE),
+    "Máximo" = max(indice_envelhecimento, na.rm = TRUE)
+  )
+
+media_indice <- round(indice_env_sobral$Média, 2)
+indice_brasil <- pop_idade_sexo |>
+  filter(localidade == "BRASIL") |>
+  pull("indice_envelhecimento")
+
+indice_ceara <- pop_idade_sexo |>
+  filter(localidade == "CEARÁ") |>
+  pull("indice_envelhecimento")
+
+indice_sobral <- pop_idade_sexo |>
+  filter(localidade == "SOBRAL") |>
+  pull("indice_envelhecimento")
+
+jovens_sobral <-pop_idade_sexo |>
+  filter(localidade == "SOBRAL") |>
+  pull("jovens_total")
+
+idosos_sobral <- pop_idade_sexo|>
+  filter(localidade == "SOBRAL") |>
+  pull("idosos_total")
+
+idosos_sobral <- format(idosos_sobral, big.mark = ".", decimal.mark = ",")
+jovens_sobral <- format(jovens_sobral, big.mark = ".", decimal.mark = ",")
+indice_sobral <- format(indice_sobral, big.mark = ".", decimal.mark = ",")
+indice_ceara <- format(indice_ceara, big.mark = ".", decimal.mark = ",")
+indice_brasil <- format(indice_brasil, big.mark = ".", decimal.mark = ",")
+média_perc_adultos <- format(média_perc_adultos, big.mark = ".", decimal.mark = ",")
+média_adultos_brasil <- format(média_adultos_brasil, big.mark = ".", decimal.mark = ",")
+média_adultos_ceara <- format(média_adultos_ceara, big.mark = ".", decimal.mark = ",")
+media_indice <- format(media_indice, big.mark = ".", decimal.mark = ",")
+```
+
+
+Quanto à caracterização da faixa etária na microrregião (jovens, adultos e idosos), observa-se que os adultos estão em maior número (`r média_perc_adultos`). Esse resultado é semelhante à porcentagem para o Brasil (`r média_adultos_brasil`) e para o estado do Ceará (`r média_adultos_ceara`). O índice de envelhecimento (nº de idosos para cada 100 jovens), na microrregião (`r media_indice`) é levemente inferior ao do Brasil (`r indice_brasil`) e do Ceará (`r indice_ceara`).
+
+Embora o índice de envelhecimento da microrregião seja relativamente alto, alguns municípios apresentam população expressivamente jovem. É o caso de Sobral (`r indice_sobral`), município mais populoso da área. A população jovem (`r jovens_sobral`) é quase o dobro da população idosa (`r idosos_sobral`). É importante salientar que Sobral é a sede a microrregião e que concentra mais da metade dos equipamentos deste. Uma vez que sua população é majoritariamente jovem, e uma vez que a população idosa costuma gerar maior demanda, deve haver um grande fluxo de referenciamento de cidades circunvizinhas. Como a tabela demonstra, municípios ao redor ou distantes de Sobral tendem a apresentar um percentual maior de população idosa.
+
+
+```{r}
+#| label: carregar-dados
+#| echo: false
+#| message: false
+#| warning: false
+
+tabela_pop_desc <- pop_idade_sexo |>
+  select(
+    localidade,
+    pop_total,
+    perc_ativos,
+    perc_jovens,
+    perc_idosos
+  )
+
+tabela_pop_desc <- tabela_pop_desc |>
+  mutate(across(
+    where(is.numeric),
+    ~ format(.x, 
+             big.mark = ".", 
+             decimal.mark = ",", 
+             scientific = FALSE,
+             nsmall = 2)  # 2 casas decimais
+  ))
+
+
+kable(
+  tabela_pop_desc,
+  format = "html", 
+  caption = "População e distribuição por faixa etária"
+)
+
+```
+
+
+Quando se realiza o recorte de gênero, nota-se que não há uma grande discrepância entre o quantitativo de homens (49%) e mulheres (51%) na microrregião de sobral. 
+
+
+
+```{r}
+#| echo: false
+#| label: "Variáveis para texto"
+mortes <- sum(mort_nascidos_vivos_micro_sobral$mortes)
+vivos <- sum(mort_nascidos_vivos_micro_sobral$nascidos_vivos)
+# sobral
+mortes_sobral <- mort_nascidos_vivos_micro_sobral[[22, 2]]
+vivos_sobral <- mort_nascidos_vivos_micro_sobral[[22, 3]]
+# ipu
+mortes_ipu <- mort_nascidos_vivos_micro_sobral[[10, 2]]
+vivos_ipu <- mort_nascidos_vivos_micro_sobral[[10, 3]]
+# pacujá
+mortes_pacuja <- mort_nascidos_vivos_micro_sobral[[16, 2]]
+vivos_pacuja <- mort_nascidos_vivos_micro_sobral[[16, 3]]
+
+## formatar para texto
+# geral
+mortes <- number(mortes, big.mark = ".", decimal.mark = ",")
+vivos <- number(vivos, big.mark = ".", decimal.mark = ",")
+# sobral
+mortes_sobral <- number(mortes_sobral, big.mark = ".", decimal.mark = ",")
+vivos_sobral <- number(vivos_sobral, big.mark = ".", decimal.mark = ",")
+# ipu
+mortes_ipu <- number(mortes_ipu, big.mark = ".", decimal.mark = ",")
+vivos_ipu <- number(vivos_ipu, big.mark = ".", decimal.mark = ",")
+
+## informações populacionais
+# Santa Quitéria
+pop_sq <- pop_micro_sobral[[20, 2]]
+pop_sq <- number(pop_sq, big.mark = ".", decimal.mark = ",")
+# Massapê
+pop_mass <- pop_micro_sobral[[12, 2]]
+pop_mass <- number(pop_mass, big.mark = ".", decimal.mark = ",")
+```
+
+# Natalidade e mortalidade
+
+A microrregião de Sobral de 2024 a 2025 registrou `r mortes` mil mortes e `r vivos` mil nascidos vivos.Entre os municípios, Sobral lidera em número de mortos (`r mortes_sobral` mil) e de nascidos vivos (`r vivos_sobral`). Ipú, por sua vez, figura como segundo, com `r mortes_ipu` mortos e `r vivos_ipu` nascidos vivos. Pacujá, por outro lado, registrou `r mortes_pacuja` mortes e `r vivos_pacuja` nascidos vivos. Observa-se, portanto, que essas duas informações - nascidos vivos e número de mortos - em geral acaba seguindo aquela lista dos mais populosos para os com menos habitantes [@saude_ce_mortalidade_2025; @saude_ce_natalidade_2025].
+
+Uma diferença que vale ser mencionada é que, embora Santa Quitéria seja o terceiro mais populoso, ela perde para Massapê nesses números, embora por um diferença muito pequena. São cidades com um quantitativo populacional próximo também: Santa Quitéria com `r pop_sq` e Massapê com `r pop_mass`, como estava expresso no gráfico anterior [@ibge_populacao_2025]
+
+Em razão dessa grande quantidade de nascidos vivos e mortes em Sobral, esperamos que essa cidade concentre um quantitativo maior de equipamentos de saúde; enquanto Pacujá sofra o efeito contrário e que esse padrão se repita para os outros municípios.
+
+```{r}
+#| label: "gráfico de dispersão com nascidos vivos por mortos em cada município"
+#| echo: false
+#| warning: false
+#| message: false
+mort_nascidos_vivos_micro_sobral |> 
+  ggplot(
+    aes(x = nascidos_vivos, y = mortes)
+  )+
+  geom_point(color = "black", size = 2) +
+  geom_text_repel(
+    data = subset(mort_nascidos_vivos_micro_sobral, municipio %in% c("Sobral", "Ipu", "Massapê", "Santa Quitéria", "Pacujá")),
+    aes(label = municipio),
+    size = 3
+  )+
+  labs(
+    title = "Relação entre nascidos vivos e mortos por município",
+    x = "Nascidos vivos",
+    y = "Mortes"
+  )+
+  theme_minimal()+
+  theme(
+    plot.title = element_text(size = 14, face = "bold"),
+    axis.title = element_text(size = 12)
+  )+
+  scale_x_log10()+
+  scale_y_log10()+
+  scale_color_viridis_d()
+```
+
+
 
 # Referências
 
