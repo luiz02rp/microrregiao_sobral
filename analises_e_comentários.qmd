@@ -7,6 +7,9 @@ format:
     number-sections: true
     toc-depth: 2
     embed-resources: true
+bibliography: referencias.bib
+csl: apa.csl
+link-citations: true
 ---
 
 ```{r pacotes}
@@ -108,7 +111,7 @@ equipamentos <- equipamentos |>
   slice(-25)
 
 equipamentos <- equipamentos |>
-  rename(
+  select(
     "Posto de saúde" = posto_de_saude,
     "UBS/CSF" = centro_de_saude_unidade_basica,
     "Policlínica" = policlinica,
@@ -120,7 +123,7 @@ equipamentos <- equipamentos |>
     "Farmácia" = farmacia,
     "Consultório isolado" = consultorio_isolado,
     "Centro de especialidade" = clinica_centro_de_especialidade,
-    "Unidade de apoio (diagnose e terapita " = unidade_de_apoio_diagnose_e_terapia_isolado,
+    "Unidade de apoio (diagnose e terapia)" = unidade_de_apoio_diagnose_e_terapia_sadt_isolado,
     "Central de gestão em saúde" = central_de_gestao_em_saude,
     "SAMU" = unidade_movel_de_nivel_pre0hospitalar_na_area_de_urgencia,
     "Unidade móvel terrestre" = unidade_movel_terrestre,
@@ -137,7 +140,8 @@ equipamentos <- equipamentos |>
     "Central de notif., capt. e dist. de órgãos estaduais" = central_de_notificacao_captacao_e_distrib_de_orgaos_estadual,
     "Polo de prevenção de doenças e agravos e promoção da saúde" = polo_de_prevencao_de_doencas_e_agravos_e_promocao_da_saude,
     "Central de abastecimento" = central_de_abastecimento,
-    "Centro de imunização" = centro_de_imunizacao
+    "Centro de imunização" = centro_de_imunizacao,
+    everything()
   )
 ```
 
@@ -209,7 +213,7 @@ kable(
 
 ## Gênero e distribuição populacional
 
-Quando se realiza o recorte de gênero, nota-se que não há uma grande discrepância entre o quantitativo de homens (49%) e mulheres (51%) na microrregião de sobral. Sobral constitui o mais populoso dentre eles com 215.286 mil habitantes. Ipu o segundo lugar nesse posto com uma poulação estimada em 42.968 mil. Paculá, por outro lado, tem a menor população que gira em torno de 6.345 mil habitantes (https://sidra.ibge.gov.br/tabela/6579).
+Quando se realiza o recorte de gênero, nota-se que não há uma grande discrepância entre o quantitativo de homens (49%) e mulheres (51%) na microrregião de sobral. Sobral constitui o mais populoso dentre eles com 215.286 mil habitantes. Ipu o segundo lugar nesse posto com uma poulação estimada em 42.968 mil. Pacujá, por outro lado, tem a menor população que gira em torno de 6.345 mil habitantes [@ibge_populacao_2025].
 
 A partir desses dados, constata-se uma desigual distribuição populacional. Tal discrepância pode ser verificada ao se ater à diferença já entre Ipú e Sobral que é de 172.318. Quando comparado com o menor município em termos populacionais (Pacujá), a diferença sobe para 208.941.
 
@@ -309,9 +313,9 @@ ce_municipios |>
 
 ## Natalidade e mortalidade
 
-A microrrgião de Sobral de 2024 a 2025 registrou `r mortes` mil mortes e `r vivos` mil nascidos vivos.Entre os municípios, Sobral lidera em número de mortos (`r mortes_sobral` mil) e de nascidos vivos (`r vivos_sobral`). Ipú, por sua vez, figura como segundo, com `r mortes_ipu` mortos e `r vivos_ipu` nascidos vivos. Pacujá, por outro lado, registrou `r mortes_pacuja` mortes e `r vivos_pacuja` nascidos vivos. Observa-se, portanto, que essas duas informações - nascidos vivos e número de mortos - em geral acaba seguindo aquela lista dos mais populosos para os com menos habitantes. (https://www.saude.ce.gov.br/tabnet-ceara/sim/ ; https://www.saude.ce.gov.br/tabnet-ceara/sinasc/)
+A microrrgião de Sobral de 2024 a 2025 registrou `r mortes` mil mortes e `r vivos` mil nascidos vivos.Entre os municípios, Sobral lidera em número de mortos (`r mortes_sobral` mil) e de nascidos vivos (`r vivos_sobral`). Ipú, por sua vez, figura como segundo, com `r mortes_ipu` mortos e `r vivos_ipu` nascidos vivos. Pacujá, por outro lado, registrou `r mortes_pacuja` mortes e `r vivos_pacuja` nascidos vivos. Observa-se, portanto, que essas duas informações - nascidos vivos e número de mortos - em geral acaba seguindo aquela lista dos mais populosos para os com menos habitantes [@saude_ce_mortalidade_2025; @saude_ce_natalidade_2025].
 
-Uma diferença que vale ser mencionada é que, embora Santa Quitéria seja o terceiro mais populoso, ela perde para Massapê nesses números, embora por um diferença muito pequena. São cidades com um quantitativo populacional próximo também: Santa Quitéria com `r pop_sq` e Massapê com `r pop_mass`, como estava expresso no gráfico anterior. (https://sidra.ibge.gov.br/tabela/6579)
+Uma diferença que vale ser mencionada é que, embora Santa Quitéria seja o terceiro mais populoso, ela perde para Massapê nesses números, embora por um diferença muito pequena. São cidades com um quantitativo populacional próximo também: Santa Quitéria com `r pop_sq` e Massapê com `r pop_mass`, como estava expresso no gráfico anterior [@ibge_populacao_2025]
 
 Em razão dessa grande quantidade de nascidos vivos e mortes em Sobral, esperamos que essa cidade concentre um quantitativo maior de equipamentos de saúde; enquanto Pacujá sofra o efeito contrário e que esse padrão se repita para os outros municípios.
 
