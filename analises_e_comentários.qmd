@@ -59,6 +59,9 @@ equipamentos <- read_csv2("data/equipamentos_limpo.csv")
 
 #idade e sexo
   pop_idade_sexo <- read.csv("data/pop_idade_sexo - Página1.csv")
+  
+#ocorrencia x residencia
+  resid_ocorr <- read.csv("data/obitos_nascimento_ocorrencia_residencia.csv")
 ```
 
 ```{r tratamento_dos_dados}
@@ -529,7 +532,7 @@ pop_mass <- number(pop_mass, big.mark = ".", decimal.mark = ",")
 
 # Natalidade e mortalidade
 
-A microrregião de Sobral de 2024 a 2025 registrou `r mortes` mil mortes e `r vivos` mil nascidos vivos.Entre os municípios, Sobral lidera em número de mortos (`r mortes_sobral` mil) e de nascidos vivos (`r vivos_sobral`). Ipú, por sua vez, figura como segundo, com `r mortes_ipu` mortos e `r vivos_ipu` nascidos vivos. Pacujá, por outro lado, registrou `r mortes_pacuja` mortes e `r vivos_pacuja` nascidos vivos. Observa-se, portanto, que essas duas informações - nascidos vivos e número de mortos - em geral acaba seguindo aquela lista dos mais populosos para os com menos habitantes [@saude_ce_mortalidade_2025; @saude_ce_natalidade_2025].
+A microrregião de Sobral de 2024 a 2025 registrou `r mortes` mil mortes e `r vivos` mil nascidos vivos. Entre os municípios, Sobral lidera em número de mortos (`r mortes_sobral` mil) e de nascidos vivos (`r vivos_sobral`). Ipú, por sua vez, figura como segundo, com `r mortes_ipu` mortos e `r vivos_ipu` nascidos vivos. Pacujá, por outro lado, registrou `r mortes_pacuja` mortes e `r vivos_pacuja` nascidos vivos. Observa-se, portanto, que essas duas informações - nascidos vivos e número de mortos - em geral acaba seguindo aquela lista dos mais populosos para os com menos habitantes [@saude_ce_mortalidade_2025; @saude_ce_natalidade_2025].
 
 Uma diferença que vale ser mencionada é que, embora Santa Quitéria seja o terceiro mais populoso, ela perde para Massapê nesses números, embora por um diferença muito pequena. São cidades com um quantitativo populacional próximo também: Santa Quitéria com `r pop_sq` e Massapê com `r pop_mass`, como estava expresso no gráfico anterior [@ibge_populacao_2025]
 
@@ -565,6 +568,71 @@ mort_nascidos_vivos_micro_sobral |>
   scale_color_viridis_d()
 ```
 
+## Ocorrência e Residência
+
+```{r}
+#| label: "ocorrencias residencias"
+#| echo: false
+#| warning: false
+#| message: false
+
+ocorrencia_morte_sobral <- resid_ocorr |>
+  filter(MUNICIPIOS == "SOBRAL") |>
+  pull("OBITOS.POR.OCORRENCIA")
+
+residencia_morte_sobral <- resid_ocorr |>
+  filter(MUNICIPIOS == "SOBRAL") |>
+  pull("OBITOS.POR.RESIDENCIA")
+
+ocorrencia_nasci_sobral <- resid_ocorr |>
+  filter(MUNICIPIOS == "SOBRAL") |>
+  pull("NASCIDOS.POR.OCORRENCIA")
+
+residencia_nasci_sobral <- resid_ocorr |>
+  filter(MUNICIPIOS == "SOBRAL") |>
+  pull("NASCIDOS.POR.RESIDENCIA")
+
+ocorrencia_morte_sobral <- format(ocorrencia_morte_sobral, big.mark = ".", decimal.mark = ",")
+residencia_morte_sobral <- format(residencia_morte_sobral, big.mark = ".", decimal.mark = ",")
+ocorrencia_nasci_sobral <- format(ocorrencia_nasci_sobral, big.mark = ".", decimal.mark = ",")
+residencia_nasci_sobral <- format(residencia_nasci_sobral, big.mark = ".", decimal.mark = ",")
+
+```
+
+
+Outro dado relevante nesse tópico é a diferença entre eventos por ocorrência e mortes por residência. Por exemplo: no caso dos óbitos, a primeira classificação se trata das mortes registradas nos equipamentos do município. A segunda, por outro lado, diz ao quantitativo do falecimento de pessoas naturais daquele município, independentemente de ter ocorrido nos equipamentos de outras localidades. Com os nascimentos, é seguida a mesma lógica: nascimentos por ocorrência e nascimentos por residência (no caso, a residência se refere ao município de origem da mãe).
+
+De acordo com o Datasus [@ssss], Sobral possui mais mortes por ocorrência (`r ocorrencia_morte_sobral`) que por residência (`r residencia_morte_sobral`). Isso significa que, dentre os falecidos na cidade de Sobral, um grande número era natural de outras cidades, evidenciando o intenso referenciamento de internações para a sede. Ou seja, há uma inversão do padrão observado nos demais municípios, nos quais há menos mortes nos equipamentos do que mortos naturais do local.
+
+Na natalidade, os números repetem a tendência observada anteriormente: a cidade com maior quantitativo de equipamentos é, também, a cidade em que o número de ocorrências (`r ocorrencia_nasci_sobral`) supera o número de residências (`r residencia_nasci_sobral`). Como se pode verificar, essa tendência segue inversa ao de outros municípios, nos quais os nascimentos por ocorrência são menores. Curiosamente, a única exceção é o município de Ipu, que, apesar de ter mais nascimentos por ocorrência que por residência, não apresenta essa mesma inversão referente aos óbitos.
+
+```{r}
+#| label: "tabela para ocorrências e residências"
+#| echo: false
+#| warning: false
+#| message: false
+
+resid_ocorr <- resid_ocorr |>
+  rename(
+    "Óbitos p/ Ocorr." = OBITOS.POR.OCORRENCIA,
+    "Óbitos p/ Resid." = OBITOS.POR.RESIDENCIA,
+    "Nasc. p/ Ocorr." = NASCIDOS.POR.OCORRENCIA,
+    "Nasc. p/ Resid." = NASCIDOS.POR.RESIDENCIA
+  )
+
+tabela_resid_ocorr_formatada <- resid_ocorr |>
+  mutate(across(
+    .cols = where(is.numeric),
+    .fns = ~ formatC(.x, format = "f", big.mark = ".", decimal.mark = ",", digits = 2)
+  ))
+
+kable(
+  tabela_resid_ocorr_formatada,
+  format = "html",
+  align = c("l", rep("r", ncol(tabela_resid_ocorr_formatada) - 1)),
+  caption = "Ocorrência e residência nos dados sobre mortalidade e natalidade"
+)
+```
 
 
 # Referências
