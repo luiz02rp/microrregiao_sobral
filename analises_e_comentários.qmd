@@ -31,6 +31,11 @@ library(knitr)
 library(tidyr)
 library(psych)
 library(apaTables)
+library(leaflet)
+library(scales)
+library(viridis)
+library(sf)
+
 ```
 
 ```{r}
@@ -406,15 +411,26 @@ pop_mass <- number(pop_mass, big.mark = ".", decimal.mark = ",")
 #| warning: false
 #| echo: false
 #| label: "Mapa de Calor Hierárquico"
-ce_municipios |> 
-  ggplot()+
-  geom_sf(aes(fill = populacao), color = "white", size = 0.1) +
-  scale_fill_viridis_c(option = "turbo", labels = comma) +
-  labs(
-    title = "Distribuição populacional da Microrregião de Sobral",
-    fill = "População"
-  ) +
-  theme_void()
+
+
+pal <- colorNumeric("viridis", domain = ce_municipios$populacao)
+
+leaflet(ce_municipios) %>%
+  addTiles() %>%
+  addPolygons(
+    fillColor = ~pal(populacao),
+    weight = 1,
+    color = "white",
+    fillOpacity = 0.7,
+    label = lapply(
+      paste0(
+        "<b>Município:</b> ", ce_municipios$name_muni, "<br>",
+        "<b>População:</b> ", format(ce_municipios$populacao, big.mark = ".", decimal.mark = ",")
+      ),
+      htmltools::HTML
+    )
+  )
+
 ```
 
 ## Natalidade e mortalidade
