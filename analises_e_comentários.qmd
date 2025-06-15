@@ -30,10 +30,11 @@ library(psych)
 library(apaTables)
 ```
 
-```{r importacao_dados}
+```{r}
 #| include: false
 #| message: false
 #| warning: false
+#| label: "Importação"
 # chamando banco de dados
 
 # população do ceará
@@ -97,10 +98,76 @@ pop_idade_sexo <- pop_idade_sexo |>
     perc_ativos = round((pop_ativa_total/pop_total)*100, 2),
     perc_idosos = round((idosos_total/pop_total)*100, 2)
   )
+
+# tratando banco de dados sobre equipamentos
+equipamentos <- equipamentos |>
+  clean_names() |> 
+  mutate(
+    across(where(is.numeric), ~replace_na(.x, 0))
+  ) |> 
+  slice(-25)
+
+equipamentos <- equipamentos |>
+  rename(
+    "Posto de saúde" = posto_de_saude,
+    "UBS/CSF" = centro_de_saude_unidade_basica,
+    "Policlínica" = policlinica,
+    "Hospital geral" = hospital_geral,
+    "Hospital especializado" = hospital_especializado,
+    "Academia da saúde" = polo_academia_da_saude,
+    "Centro de atenção psicossocial" = centro_de_atencao_psicossocial,
+    "Unidade de atenção à saúde indígena" = unidade_de_atencao_a_saude_indigena,
+    "Farmácia" = farmacia,
+    "Consultório isolado" = consultorio_isolado,
+    "Centro de especialidade" = clinica_centro_de_especialidade,
+    "Unidade de apoio (diagnose e terapita " = unidade_de_apoio_diagnose_e_terapia_isolado,
+    "Central de gestão em saúde" = central_de_gestao_em_saude,
+    "SAMU" = unidade_movel_de_nivel_pre0hospitalar_na_area_de_urgencia,
+    "Unidade móvel terrestre" = unidade_movel_terrestre,
+    "Unidade mista" = unidade_mista,
+    "Unidade de vigilância em saúde" = unidade_de_vigilancia_em_saude,
+    "Centro de parto normal" = centro_de_parto_normal_0_isolado,
+    "Centro de atenção em hemoterapia e/ou hematologica" = centro_de_atencao_hemoterapia_e_ou_hematologica,
+    "Centro de apoio a saúde da família" = centro_de_apoio_a_saude_da_familia,
+    "Pronto atendimento" = pronto_atendimento,
+    "Central de regulação médica das urgências" = central_de_regulacao_medica_das_urgencias,
+    "Serviço de atenção domiciliar" = servico_de_atencao_domiciliar_isolado_home_care,
+    "Lab. de saúde pública" = laboratorio_de_saude_publica,
+    "Central de regulação do acesso" = central_de_regulacao_do_acesso,
+    "Central de notif., capt. e dist. de órgãos estaduais" = central_de_notificacao_captacao_e_distrib_de_orgaos_estadual,
+    "Polo de prevenção de doenças e agravos e promoção da saúde" = polo_de_prevencao_de_doencas_e_agravos_e_promocao_da_saude,
+    "Central de abastecimento" = central_de_abastecimento,
+    "Centro de imunização" = centro_de_imunizacao
+  )
+```
+
+```{r}
+#| include: false
+#| message: false
+#| warning: false
+#| label: "Análises"
+# análise descritiva
+tabela_descritiva_pop <- pop_micro_sobral |> 
+  summarise(
+    "Quantidade de municípios" = n(),
+    "População total" = sum(populacao),
+    "Média" = mean(populacao),
+    "Mediana" = median(populacao), 
+    "Desvio padrão" = sd(populacao),
+    "Valor mínimo" = min(populacao),
+    "Valor máximo" = max(populacao)
+  )
+
+# análise descritiva dos equipamentos
+
+descritiva_equipamentos <- equipamentos |> 
+  summarise(
+    across(where(is.numeric), sum)
+  ) 
+
 ```
 
 # Aspectos gerais
-
 
 ```{r}
 #| echo: false
@@ -109,53 +176,49 @@ pop_idade_sexo <- pop_idade_sexo |>
  a <- label_percent(accuracy = 0.001)(a)
 ```
 
-A microrregião de Sobral é composta por 24 municípios. São eles: Alcântaras, Cariré, Catunda, Coreaú, Forquilha, Frecheirinha, Graça, Groaíras, Hidrolândia, Ipu, Irauçuba, Massapê, Meruoca, Moraújo, Mucambo, Pacujá, Pires Ferreira, Reriutaba, Santa Quitéria, Santana Do Acaraú, Senador Sá, Sobral, Uruoca e Varjota. Tais municípios totalizam 658.665 mil em termos populacionais o que representa 39,2% da população da macrorregião norte (1.679.525 milhões) e em torno de `r a`  da população do Ceará (9.233.656 milhões). (https://sidra.ibge.gov.br/tabela/6579).
-
-=> colocar tabela aqui
-
-## Gênero e distribuição populacional
-Quando se realiza o recorte de gênero, nota-se que não há uma grande discrepância entre o quantitativo de homens (49%) e mulheres (51%) na microrregião de sobral. Sobral constitui o mais populoso dentre eles com 215.286 mil habitantes. Ipu o segundo lugar nesse posto com uma poulação estimada em 42.968 mil. Paculá, por outro lado, tem a menor população que gira em torno de 6.345 mil habitantes (https://sidra.ibge.gov.br/tabela/6579). 
-
-A partir desses dados, constata-se uma desigual distribuição populacional. Tal discrepância pode ser verificada ao se ater à diferença já entre Ipú e Sobral que é de 172.318. Quando comparado com o menor município em termos populacionais (Pacujá), a diferença sobe para 208.941. 
-
+A microrregião de Sobral é composta por 24 municípios. São eles: Alcântaras, Cariré, Catunda, Coreaú, Forquilha, Frecheirinha, Graça, Groaíras, Hidrolândia, Ipu, Irauçuba, Massapê, Meruoca, Moraújo, Mucambo, Pacujá, Pires Ferreira, Reriutaba, Santa Quitéria, Santana Do Acaraú, Senador Sá, Sobral, Uruoca e Varjota. Tais municípios totalizam 658.665 mil em termos populacionais o que representa 39,2% da população da macrorregião norte (1.679.525 milhões) e em torno de `r a` da população do Ceará (9.233.656 milhões). (https://sidra.ibge.gov.br/tabela/6579).
 
 ```{r}
-#| include: false
 #| message: false
 #| warning: false
-# análise descritiva
-tabela_descritiva_pop <- pop_micro_sobral |> 
-  summarise(
-    qde_municipios = n(),
-    total_populacao = sum(populacao),
-    media = mean(populacao),
-    mediana = median(populacao), 
-    desvio_padrao = sd(populacao),
-    valor_minimo = min(populacao),
-    valor_maximo = max(populacao)
-  )
+#| echo: false
+#| label: "Descritiva da população - tabela"
 
 tabela_descritiva_pop <- tabela_descritiva_pop |> 
   pivot_longer(
     cols = everything(),
-    names_to = "Estatística",
-    values_to = "Valor"
-  )
+    names_to = "Indicador Demográfico", 
+    values_to = "Valor (habitantes)"
+  ) |> 
+  mutate(`Valor (habitantes)` = format(`Valor (habitantes)`, 
+                                      big.mark = ".", 
+                                      decimal.mark = ",", 
+                                      scientific = FALSE))
 
 kable(
   tabela_descritiva_pop,
-  format = "html",  # pode trocar pra "markdown" se for usar no RMarkdown
+  format = "html",
+  align = c("l", "r"),
   digits = 2,
-  caption = "Tabela 1\nEstatísticas descritivas da população dos municípios da microrregião de Sobral."
+  caption = "Tabela 1 - Estatísticas descritivas da população dos municípios da microrregião de Sobral.",
+  col.names = c("Indicador Demográfico", "Valor (habitantes)")
 )
 
-
 ```
+
+
+## Gênero e distribuição populacional
+
+Quando se realiza o recorte de gênero, nota-se que não há uma grande discrepância entre o quantitativo de homens (49%) e mulheres (51%) na microrregião de sobral. Sobral constitui o mais populoso dentre eles com 215.286 mil habitantes. Ipu o segundo lugar nesse posto com uma poulação estimada em 42.968 mil. Paculá, por outro lado, tem a menor população que gira em torno de 6.345 mil habitantes (https://sidra.ibge.gov.br/tabela/6579).
+
+A partir desses dados, constata-se uma desigual distribuição populacional. Tal discrepância pode ser verificada ao se ater à diferença já entre Ipú e Sobral que é de 172.318. Quando comparado com o menor município em termos populacionais (Pacujá), a diferença sobe para 208.941.
+
 
 ```{r tabelas}
 #| message: false
 #| warning: false
 #| echo: false
+#| label: "Gráfico de colunas"
 
 #gráfico de colunas
 gra_col <- pop_micro_sobral |> 
@@ -195,6 +258,7 @@ gra_col_int
 
 ```{r}
 #| echo: false
+#| label: "Variáveis para texto"
 mortes <- sum(mort_nascidos_vivos_micro_sobral$mortes)
 vivos <- sum(mort_nascidos_vivos_micro_sobral$nascidos_vivos)
 # sobral
@@ -231,7 +295,7 @@ pop_mass <- number(pop_mass, big.mark = ".", decimal.mark = ",")
 #| message: false
 #| warning: false
 #| echo: false
-#| label: Mapa de Calor Hierárquico
+#| label: "Mapa de Calor Hierárquico"
 ce_municipios |> 
   ggplot()+
   geom_sf(aes(fill = populacao), color = "white", size = 0.1) +
@@ -242,17 +306,17 @@ ce_municipios |>
   ) +
   theme_void()
 ```
+
 ## Natalidade e mortalidade
+
 A microrrgião de Sobral de 2024 a 2025 registrou `r mortes` mil mortes e `r vivos` mil nascidos vivos.Entre os municípios, Sobral lidera em número de mortos (`r mortes_sobral` mil) e de nascidos vivos (`r vivos_sobral`). Ipú, por sua vez, figura como segundo, com `r mortes_ipu` mortos e `r vivos_ipu` nascidos vivos. Pacujá, por outro lado, registrou `r mortes_pacuja` mortes e `r vivos_pacuja` nascidos vivos. Observa-se, portanto, que essas duas informações - nascidos vivos e número de mortos - em geral acaba seguindo aquela lista dos mais populosos para os com menos habitantes. (https://www.saude.ce.gov.br/tabnet-ceara/sim/ ; https://www.saude.ce.gov.br/tabnet-ceara/sinasc/)
 
 Uma diferença que vale ser mencionada é que, embora Santa Quitéria seja o terceiro mais populoso, ela perde para Massapê nesses números, embora por um diferença muito pequena. São cidades com um quantitativo populacional próximo também: Santa Quitéria com `r pop_sq` e Massapê com `r pop_mass`, como estava expresso no gráfico anterior. (https://sidra.ibge.gov.br/tabela/6579)
 
 Em razão dessa grande quantidade de nascidos vivos e mortes em Sobral, esperamos que essa cidade concentre um quantitativo maior de equipamentos de saúde; enquanto Pacujá sofra o efeito contrário e que esse padrão se repita para os outros municípios.
 
-
-
 ```{r}
-#| label: gráfico de dispersão com nascidos vivos por mortos em cada município
+#| label: "gráfico de dispersão com nascidos vivos por mortos em cada município"
 #| echo: false
 #| warning: false
 #| message: false
@@ -280,30 +344,9 @@ mort_nascidos_vivos_micro_sobral |>
   scale_y_log10()+
   scale_color_viridis_d()
 ```
- 
 
 # Equipamentos
-```{r}
-#| echo: false
 
-# tratando banco de dados sobre equipamentos
-equipamentos <- equipamentos |>
-  clean_names() |> 
-  mutate(
-    across(where(is.numeric), ~replace_na(.x, 0))
-  ) |> 
-  slice(-25)
-```
-
-
-```{r}
-#| echo: false
-# descritiva dos equipamentos
-descritiva_equipamentos <- equipamentos |> 
-  summarise(
-    across(where(is.numeric), sum)
-  ) 
-```
 Há um total de `r descritiva_equipamentos[[1, 30]]` equipamentos registrados. Eles são distribuídos em 29 categorias, conforme a tabela abaixo demonstra:
 
 ```{r}
@@ -323,6 +366,7 @@ knitr::kable(
   caption = "Distribuição dos equipamentos"
 )
 ```
+
 ```{r}
 #| echo: false
 
@@ -358,22 +402,12 @@ relacao_hidro_a_moraujo_regiao <- percent(relacao_hidro_a_moraujo_regiao/total_g
 
 ```
 
-Quanto à sua distribuição por município, observa-se uma predominância em Sobral, o qual concentra `r equipamentos[[22, 31]]` deles. Tal número representa `r relacao_sobral_regiao` daquele total. Quando comparado com Ipu (48 dispositivos), há uma diferença expressiva de `r equipamentos[[22, 31]] - equipamentos[[10, 31]]`. Entretanto, não se vê uma discrepância desse nível entre Ipu e  Santa Quitéria, que é a terceira cidade com maior quantidade desses estabelecimentos (`r equipamentos[[20, 31]]`). Juntas, essas duas cidades representam `r relacao_ipu_sq_regiao`.
+Quanto à sua distribuição por município, observa-se uma predominância em Sobral, o qual concentra `r equipamentos[[22, 31]]` deles. Tal número representa `r relacao_sobral_regiao` daquele total. Quando comparado com Ipu (48 dispositivos), há uma diferença expressiva de `r equipamentos[[22, 31]] - equipamentos[[10, 31]]`. Entretanto, não se vê uma discrepância desse nível entre Ipu e Santa Quitéria, que é a terceira cidade com maior quantidade desses estabelecimentos (`r equipamentos[[20, 31]]`). Juntas, essas duas cidades representam `r relacao_ipu_sq_regiao`.
 
 Em seguida vêm Santana do Acaraú (`r equipamentos[[19, 31]]`), Massapê (`r equipamentos[[12, 31]]`), Varjota (`r equipamentos[[24, 31]]`), Forquilha (`r equipamentos[[5, 31]]`), Irauçuba (`r equipamentos[[11, 31]]`), Reriutaba (`r equipamentos[[18, 31]]`), Meruoca (`r equipamentos[[13, 31]]`). As sete cidades compõem `r relacao_santana_a_meruoca_regiao` do total de equipamentos. Os demais municípios variam entre 20 a 11 quanto a esse número, sendo representante de `r relacao_hidro_a_moraujo_regiao` na região analisada. Seus municípios individuais são: Hidrolândia (`r equipamentos[[9, 31]]`), Groaíras (`r equipamentos[[8, 31]]`), Frecheirinha (`r equipamentos[[6, 31]]`), Coreaú (`r equipamentos[[4, 31]]`), Cariré (`r equipamentos[[2, 31]]`), Uruoca (`r equipamentos[[23, 31]]`), Graça (`r equipamentos[[7, 31]]`), Mucambo (`r equipamentos[[15, 31]]`), Alcântaras (`r equipamentos[[1, 31]]`), Catunda (`r equipamentos[[3, 31]]`), Pires Ferreira (`r equipamentos[[17, 31]]`), Pacujá (`r equipamentos[[16, 31]]`), Senador Sá (`r equipamentos[[21, 31]]`), Moraújo (`r equipamentos[[14, 31]]`).
 
-=> Gráfico da quantidade de equipamentos
+=\> Gráfico da quantidade de equipamentos
 
-Portanto, observa-se que a distribuição dos equipamentos acompanha aquela tendência populacional assim como a relação entre nascidos vivos e mortes. Sobral lidera todos esses indicativos, sendo seguido por Ipú, embora esta tenha indicadores muito distantes em relação à Sobral. Entretanto, quando comparada com Santa Quitéria, Santana do Acaraú ou Massapê, não se constata uma diferença tão expressiva quanto à Sobral. Na outro extremo, pacujá segue a tendência a acompanhar os menores números e, especificamente quanto ao número de equipamentos, Moraújo e Senador Sá apresentam menos, mas é diferença é de apenas 1. 
+Portanto, observa-se que a distribuição dos equipamentos acompanha aquela tendência populacional assim como a relação entre nascidos vivos e mortes. Sobral lidera todos esses indicativos, sendo seguido por Ipú, embora esta tenha indicadores muito distantes em relação à Sobral. Entretanto, quando comparada com Santa Quitéria, Santana do Acaraú ou Massapê, não se constata uma diferença tão expressiva quanto à Sobral. Na outro extremo, pacujá segue a tendência a acompanhar os menores números e, especificamente quanto ao número de equipamentos, Moraújo e Senador Sá apresentam menos, mas é diferença é de apenas 1.
 
-
-
-=> fazer gráfico de colunas para representar a distribuição dos equipamentos. Variáveis: tipo de equipamento, cidade, quantidade
-
- 
-
-
-
-
-
-
+=\> fazer gráfico de colunas para representar a distribuição dos equipamentos. Variáveis: tipo de equipamento, cidade, quantidade
