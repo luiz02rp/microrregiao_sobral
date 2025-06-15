@@ -200,9 +200,9 @@ descritiva_equipamentos <- equipamentos |>
 
 A microrregião de Sobral é composta por 24 municípios. São eles: Alcântaras, Cariré, Catunda, Coreaú, Forquilha, Frecheirinha, Graça, Groaíras, Hidrolândia, Ipu, Irauçuba, Massapê, Meruoca, Moraújo, Mucambo, Pacujá, Pires Ferreira, Reriutaba, Santa Quitéria, Santana Do Acaraú, Senador Sá, Sobral, Uruoca e Varjota. Tais municípios totalizam 658.665 mil em termos populacionais o que representa 39,2% da população da macrorregião norte (1.679.525 milhões) e em torno de `r a` da população do Ceará (9.233.656 milhões) [@ibge_populacao_2025].
 
-Sobral constitui o mais populoso dentre eles com 215.286 mil habitantes. Ipu o segundo lugar nesse posto com uma poulação estimada em 42.968 mil. Pacujá, por outro lado, tem a menor população que gira em torno de 6.345 mil habitantes [@ibge_populacao_2025].
+Sobral constitui o mais populoso dentre eles com 215.286 mil habitantes. Ipu ocupa o segundo lugar nesse posto, com uma população estimada em 42.968 mil. Pacujá, por outro lado, tem a menor população que gira em torno de 6.345 mil habitantes [@ibge_populacao_2025].
 
-A partir desses dados, constata-se uma desigual distribuição populacional [M = (`r média_micro_pop`), DP = (`r dp_micro_pop`), Me = (`r mediana_micro_pop`), Min = (`r min`), Max = (`r max`). Tal discrepância pode ser verificada ao se ater à diferença já entre Ipú e Sobral que é de 172.318. Quando comparado com o menor município em termos populacionais (Pacujá), a diferença sobe para 208.941.
+A partir desses dados, constata-se uma desigual distribuição populacional (M = `r média_micro_pop`, Me = `r mediana_micro_pop`, DP = `r dp_micro_pop`, Min = `r min`, Max = `r max`). Tal discrepância pode ser ilustrada logo ao se ater à diferença entre Ipu e Sobral, que é de 172.318. Quando se compara a maior cidade com o menor município (Pacujá), ainda em termos populacionais, a diferença sobe para 208.941.
 
 ```{r}
 #| message: false
