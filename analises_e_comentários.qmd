@@ -530,7 +530,7 @@ A microrregião de Sobral, de 2024 a 2025, registrou `r mortes` mil mortes e `r 
 
 Uma diferença que vale ser mencionada é que, embora Santa Quitéria seja o terceiro mais populoso, ela perde para Massapê nesses números, embora por um diferença muito pequena. São cidades com um quantitativo populacional próximo também: Santa Quitéria com `r pop_sq` e Massapê com `r pop_mass`, como estava expresso no gráfico anterior [@ibge_populacao_2025]
 
-Em razão da grande quantidade de nascidos vivos e mortes em Sobral, esperamos que essa cidade concentre um quantitativo maior de equipamentos de saúde. Hipotetizamos, também, que Pacujá concetre menos. O padrão especulado é que, quanto maior a população de um município, mais equipamentos este possuirá. O gráfico de dispersão abaixo corrobora essa hipótese.
+Em razão da grande quantidade de nascidos vivos e mortes em Sobral, esperamos que essa cidade concentre um quantitativo maior de equipamentos de saúde. Hipotetizamos, também, que Pacujá concetre menos. O padrão especulado é que, quanto maior a população de um município, mais equipamentos este possuirá.
 
 ```{r}
 #| label: "gráfico de dispersão com nascidos vivos por mortos em cada município"
