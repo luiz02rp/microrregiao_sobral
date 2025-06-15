@@ -364,7 +364,7 @@ relacao_hidro_a_moraujo_regiao <- percent(relacao_hidro_a_moraujo_regiao/total_g
 
 ```
 
-Quanto à sua distribuição por município, observa-se uma predominância em Sobral, o qual concentra `r equipamentos[[22, 31]]` deles. Tal número representa `r relacao_sobral_regiao` daquele total. Quando comparado com Ipu (48 dispositivos), há uma diferença expressiva de `r equipamentos[[22, 31]] - equipamentos[[10, 31]]`. Entretanto, não se vê uma discrepância desse nível entre Ipu e Santa Quitéria, que é a terceira cidade com maior quantidade desses estabelecimentos (`r equipamentos[[20, 31]]`). Juntas, essas duas cidades representam `r relacao_ipu_sq_regiao`.
+Quanto à sua distribuição por município, observa-se uma predominância em Sobral, o qual concentra `r equipamentos[[22, 31]]` deles. Tal número representa `r relacao_sobral_regiao` daquele total. Quando comparado com Ipu (48 dispositivos), há uma diferença expressiva de `r equipamentos[[22, 31]] - equipamentos[[10, 31]]`. Entretanto, não se vê uma discrepância desse nível entre Ipu e Santa Quitéria, que é a terceira cidade com maior quantidade desses estabelecimentos (`r equipamentos[[20, 31]]`). Juntas, essas duas cidades representam `r relacao_ipu_sq_regiao` [@datasus_cnes_2025].
 
 Em seguida vêm Santana do Acaraú (`r equipamentos[[19, 31]]`), Massapê (`r equipamentos[[12, 31]]`), Varjota (`r equipamentos[[24, 31]]`), Forquilha (`r equipamentos[[5, 31]]`), Irauçuba (`r equipamentos[[11, 31]]`), Reriutaba (`r equipamentos[[18, 31]]`), Meruoca (`r equipamentos[[13, 31]]`). As sete cidades compõem `r relacao_santana_a_meruoca_regiao` do total de equipamentos. Os demais municípios variam entre 20 a 11 quanto a esse número, sendo representante de `r relacao_hidro_a_moraujo_regiao` na região analisada. Seus municípios individuais são: Hidrolândia (`r equipamentos[[9, 31]]`), Groaíras (`r equipamentos[[8, 31]]`), Frecheirinha (`r equipamentos[[6, 31]]`), Coreaú (`r equipamentos[[4, 31]]`), Cariré (`r equipamentos[[2, 31]]`), Uruoca (`r equipamentos[[23, 31]]`), Graça (`r equipamentos[[7, 31]]`), Mucambo (`r equipamentos[[15, 31]]`), Alcântaras (`r equipamentos[[1, 31]]`), Catunda (`r equipamentos[[3, 31]]`), Pires Ferreira (`r equipamentos[[17, 31]]`), Pacujá (`r equipamentos[[16, 31]]`), Senador Sá (`r equipamentos[[21, 31]]`), Moraújo (`r equipamentos[[14, 31]]`).
 
@@ -451,9 +451,11 @@ media_indice <- format(media_indice, big.mark = ".", decimal.mark = ",")
 ```
 
 
-Quanto à caracterização da faixa etária na microrregião (jovens, adultos e idosos), observa-se que os adultos estão em maior número (`r média_perc_adultos`). Esse resultado é semelhante à porcentagem para o Brasil (`r média_adultos_brasil`) e para o estado do Ceará (`r média_adultos_ceara`). O índice de envelhecimento (nº de idosos para cada 100 jovens), na microrregião (`r media_indice`) é inferior ao do Brasil (`r indice_brasil`), mas próximo do Ceará (`r indice_ceara`). Ainda assim, é um índice considerado alto.
+Quanto à caracterização da faixa etária na microrregião (jovens, adultos e idosos), observa-se que os adultos estão em maior número (`r média_perc_adultos`). Esse resultado é semelhante à porcentagem para o Brasil (`r média_adultos_brasil`) e para o estado do Ceará (`r média_adultos_ceara`). O índice de envelhecimento (nº de idosos para cada 100 jovens), na microrregião (`r media_indice`) é inferior ao do Brasil (`r indice_brasil`), mas próximo do Ceará (`r indice_ceara`). Ainda assim, é um índice considerado alto [@ibge_populacao_genero_2025].
 
 Apesar do índice médio elevado, alguns municípios apresentam população expressivamente jovem. É o caso de Sobral (`r indice_sobral`), município mais populoso da área. A população jovem (`r jovens_sobral`) é quase o dobro da população idosa (`r idosos_sobral`). É importante salientar que Sobral é a sede a microrregião e que concentra mais da metade dos equipamentos deste. Uma vez que sua população é majoritariamente jovem, e uma vez que a população idosa costuma gerar maior demanda, deve haver um grande fluxo de referenciamento de cidades circunvizinhas. Como a tabela demonstra, municípios ao redor ou distantes de Sobral tendem a apresentar um percentual maior de população idosa.
+
+Quando se realiza o recorte de gênero, nota-se que não há uma grande discrepância entre o quantitativo de homens (49%) e mulheres (51%) na microrregião de sobral. 
 
 
 ```{r}
@@ -489,9 +491,6 @@ kable(
 )
 
 ```
-
-
-Quando se realiza o recorte de gênero, nota-se que não há uma grande discrepância entre o quantitativo de homens (49%) e mulheres (51%) na microrregião de sobral. 
 
 
 
