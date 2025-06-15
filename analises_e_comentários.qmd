@@ -215,10 +215,113 @@ kable(
 ```
 
 
-## Gênero e faixa etária
+# Gênero e faixa etária
+
+```{r}
+names(pop_idade_sexo)[1] <- "localidade"
+municipios_sobral <- c(
+  "ALCANTARAS", "CARIRE", "CATUNDA", "COREAU", "FORQUILHA", "FRECHEIRINHA", 
+  "GRACA", "GROAIRAS", "HIDROLANDIA", "IPU", "IRAUCUBA", "MASSAPE", 
+  "MERUOCA", "MORAUJO", "MUCAMBO", "PACUJA", "PIRES FERREIRA", "RERIUTABA", 
+  "SANTA QUITERIA", "SANTANA DO ACARAU", "SENADOR SA", "SOBRAL", "URUOCA", "VARJOTA"
+)
+pop_idade_sobral <- pop_idade_sexo |>
+  filter(localidade %in% municipios_sobral)
+
+perc_adultos <- pop_idade_sobral |>
+  summarise(
+    "Média" = mean(perc_ativos, na.rm = TRUE),
+    "Mediana" = median(perc_ativos, na.rm = TRUE),
+    "Desvio padrão" = sd(perc_ativos, na.rm = TRUE),
+    "Mínimo" = min(perc_ativos, na.rm = TRUE),
+    "Máximo" = max(perc_ativos, na.rm = TRUE)
+  )
+
+média_perc_adultos <- round(perc_adultos$Média, 2)
+
+média_adultos_brasil <- pop_idade_sexo |>
+  filter(localidade == "BRASIL") |>
+  pull("perc_ativos")
+
+média_adultos_ceara <- pop_idade_sexo |>
+  filter(localidade == "CEARÁ") |>
+  pull("perc_ativos")
+
+pop_idade_sobral <- pop_idade_sobral |>
+  mutate(indice_envelhecimento = as.numeric(indice_envelhecimento))
+
+indice_env_sobral <- pop_idade_sobral |>
+  summarise(
+    "Média" = mean(indice_envelhecimento, na.rm = TRUE),
+    "Mediana" = median(indice_envelhecimento, na.rm = TRUE),
+    "Desvio padrão" = sd(indice_envelhecimento, na.rm = TRUE),
+    "Mínimo" = min(indice_envelhecimento, na.rm = TRUE),
+    "Máximo" = max(indice_envelhecimento, na.rm = TRUE)
+  )
+
+media_indice <- indice_env_sobral$Média
+indice_brasil <- pop_idade_sexo |>
+  filter(localidade == "BRASIL") |>
+  pull("indice_envelhecimento")
+
+indice_ceara <- pop_idade_sexo |>
+  filter(localidade == "CEARÁ") |>
+  pull("indice_envelhecimento")
+
+indice_sobral <- pop_idade_sexo |>
+  filter(localidade == "SOBRAL") |>
+  pull("indice_envelhecimento")
+
+jovens_sobral <-pop_idade_sexo |>
+  filter(localidade == "SOBRAL") |>
+  pull("jovens_total")
+
+idosos_sobral <- pop_idade_sexo|>
+  filter(localidade == "SOBRAL") |>
+  pull("idosos_total")
+```
+
+
+Quanto à população predominante na microrregião (jovens, adultos e idosos), observa-se que os adultos estão em maior número (`r média_perc_adultos`). Esse resultado é semelhante à porcentagem para o Brasil (`r média_adultos_brasil`) e para o estado do Ceará (`r média_adultos_ceara`). O índice de envelhecimento (nº de idosos para cada 100 jovens), na microrregião, é de (`r media_indice`). Para o Brasil e o Ceará, o índice é, respectivamente: (`r indice_brasil`) e  e (`r indice_ceara`), o que demonstra que o envelhecimento é levemente inferior ao observado no Brasil como um todo.
+
+Embora o índice de envelhecimento da microrregião seja relativamente alto, alguns municípios apresentam população expressivamente jovem. É o caso de Sobral, município mais populoso da área, que conta com um índice de (`r indice_sobral`). A população jovem, em (`r jovens_sobral`) é quase o dobro da população idosa (`r idosos_sobral`). Isso é relevante pois Sobral é a sede a microrregião e concentra mais da metade dos equipamentos. Uma vez que sua população é majoritariamente jovem, a população idosa, que costuma gerar maior demanda, deve partir das cidades circunvizinhas. Como a tabela demonstra, municípios ao redor ou distantes de Sobral tendem a ter um percentual maior de população idosa.
+
+```{r}
+#| label: carregar-dados
+#| echo: false
+#| message: false
+#| warning: false
+
+tabela_pop_desc <- pop_idade_sexo |>
+  select(
+    localidade,
+    pop_total,
+    perc_ativos,
+    perc_jovens,
+    perc_idosos
+  )
+
+tabela_pop_desc <- tabela_pop_desc |>
+  mutate(across(
+    where(is.numeric),
+    ~ format(.x, 
+             big.mark = ".", 
+             decimal.mark = ",", 
+             scientific = FALSE,
+             nsmall = 2)  # 2 casas decimais
+  ))
+
+
+kable(
+  tabela_pop_desc,
+  format = "html", 
+  caption = "População e distribuição por faixa etária"
+)
+
+```
+
 
 Quando se realiza o recorte de gênero, nota-se que não há uma grande discrepância entre o quantitativo de homens (49%) e mulheres (51%) na microrregião de sobral. 
-
 
 
 ```{r tabelas}
