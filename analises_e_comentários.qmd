@@ -600,7 +600,7 @@ residencia_nasci_sobral <- format(residencia_nasci_sobral, big.mark = ".", decim
 ```
 
 
-Outro dado relevante nesse tópico é a diferença entre eventos por ocorrência e mortes por residência. Por exemplo: no caso dos óbitos, a primeira classificação se trata das mortes registradas nos equipamentos do município. A segunda, por outro lado, diz ao quantitativo do falecimento de pessoas naturais daquele município, independentemente de ter ocorrido nos equipamentos de outras localidades. Com os nascimentos, é seguida a mesma lógica: nascimentos por ocorrência e nascimentos por residência (no caso, a residência se refere ao município de origem da mãe).
+Outro dado relevante nesse tópico é a diferença entre eventos por ocorrência e eventos por residência. Por exemplo: no caso dos óbitos, a primeira classificação se trata das mortes registradas nos equipamentos do município. A segunda, por outro lado, diz ao quantitativo do falecimento de pessoas naturais daquele município, independentemente de ter ocorrido nos equipamentos de outras localidades. Com os nascimentos, é seguida a mesma lógica: nascimentos por ocorrência e nascimentos por residência (no caso, a residência se refere ao município de origem da mãe).
 
 De acordo com o Datasus [@ssss], Sobral possui mais mortes por ocorrência (`r ocorrencia_morte_sobral`) que por residência (`r residencia_morte_sobral`). Isso significa que, dentre os falecidos na cidade de Sobral, um grande número era natural de outras cidades, evidenciando o intenso referenciamento de internações para a sede. Ou seja, há uma inversão do padrão observado nos demais municípios, nos quais há menos mortes nos equipamentos do que mortos naturais do local.
 
@@ -623,7 +623,13 @@ resid_ocorr <- resid_ocorr |>
 tabela_resid_ocorr_formatada <- resid_ocorr |>
   mutate(across(
     .cols = where(is.numeric),
-    .fns = ~ formatC(.x, format = "f", big.mark = ".", decimal.mark = ",", digits = 2)
+    .fns = ~ format(
+      .x,
+      big.mark = ".",
+      decimal.mark = ",",
+      scientific = FALSE,
+      trim = TRUE
+    )
   ))
 
 kable(
