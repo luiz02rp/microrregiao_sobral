@@ -635,7 +635,8 @@ kable(
 ```
 
 
-#Conclusões
+# Conclusões
+
 Portanto, observa-se que a distribuição dos equipamentos acompanha aquela tendência populacional assim como a relação entre nascidos vivos e mortes. Sobral lidera todos esses indicativos, sendo seguido por Ipú, embora esta tenha indicadores muito distantes em relação à Sobral. Entretanto, quando comparada com Santa Quitéria, Santana do Acaraú ou Massapê, não se constata uma diferença tão expressiva quanto à Sobral. Na outro extremo, pacujá segue a tendência a acompanhar os menores números e, especificamente quanto ao número de equipamentos, Moraújo e Senador Sá apresentam menos, mas é diferença é de apenas 1.
 
 # Referências
