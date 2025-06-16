@@ -35,6 +35,7 @@ library(leaflet)
 library(scales)
 library(viridis)
 library(sf)
+library(kableExtra)
 
 ```
 
@@ -398,11 +399,11 @@ Quando se realiza o recorte de gênero, nota-se que não há uma grande discrep�
 
 tabela_pop_desc <- pop_idade_sexo |>
   select(
-    localidade,
-    pop_total,
-    perc_ativos,
-    perc_jovens,
-    perc_idosos
+    "Localidade" = localidade,
+    "População Total" =pop_total,
+    "Ativos" = perc_ativos,
+    "Jovens"= perc_jovens,
+    "Idosos" = perc_idosos
   )
 
 tabela_pop_desc <- tabela_pop_desc |>
@@ -419,7 +420,7 @@ tabela_pop_desc <- tabela_pop_desc |>
 kable(
   tabela_pop_desc,
   format = "html", 
-  caption = "População e distribuição por faixa etária"
+  caption = "Tabela 2 -População e distribuição por faixa etária"
 )
 
 ```
