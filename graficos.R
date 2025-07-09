@@ -5,6 +5,16 @@ library(dplyr)
 library(janitor)
 library(ggpubr)
 library(corrplot)
+library(stringr)
+library(stringi)
+
+df <- df %>%
+  mutate(qual_nivel_predomina = qual_nivel_predomina %>%
+           stri_trans_general("Latin-ASCII") %>%  # remove acentos
+           str_to_lower() %>%
+           str_trim()
+  )
+
 
 df <- read.csv("planilha_psis_municipio - níveis_atencao_psi.csv",
                fileEncoding = "UTF-8-BOM", 
@@ -35,6 +45,14 @@ limpa_coluna <- function(col) {
 df[colunas_para_converter] <- lapply(df[colunas_para_converter], limpa_coluna)
 
 df <- left_join(df, df2, by = c("municipios" = "municipio"))
+
+dados <- df %>%
+  mutate(qual_nivel_predomina = qual_nivel_predomina %>%
+           str_to_lower() %>%         # deixar tudo minúsculo
+           str_trim() %>%             # remover espaços antes/depois
+           str_replace_all("í", "i")  # padronizar acento, se necessário
+  )
+
 
 ggplot(data.frame(x = df$total_de_psicologos), aes(x = x)) +
   geom_density(fill = "grey", alpha = 0.7) +
@@ -174,3 +192,17 @@ corrplot(cor_matrix, method = "number", type = "upper")
 shapiro.test(df$atencao_primaria)
 shapiro.test(df$atencao_secundaria)
 wilcox.test(df$atencao_primaria, df$atencao_secundaria)
+
+df <- df |>
+  mutate(
+    atencao_primaria = ifelse(atencao_primaria == 0, NA, atencao_primaria),
+    atencao_secundaria = ifelse(atencao_secundaria == 0, NA, atencao_secundaria))
+
+df <- df |> 
+  mutate(
+    pop_pri = populacao/atencao_primaria,
+    pop_sec = populacao/atencao_secundaria
+)
+
+describe(df$pop_pri)
+describe(df$pop_sec)
