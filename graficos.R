@@ -9,6 +9,8 @@ library(corrplot)
 df <- read.csv("planilha_psis_municipio - níveis_atencao_psi.csv",
                fileEncoding = "UTF-8-BOM", 
 stringsAsFactors = FALSE)
+df2 <- read.csv("data/pop_idade_sexo - Página1.csv")
+df2 <- janitor::clean_names(df2)
 
 df <- janitor::clean_names(df)
 
@@ -32,7 +34,7 @@ limpa_coluna <- function(col) {
 
 df[colunas_para_converter] <- lapply(df[colunas_para_converter], limpa_coluna)
 
-
+df <- left_join(df, df2, by = c("municipios" = "municipio"))
 
 ggplot(data.frame(x = df$total_de_psicologos), aes(x = x)) +
   geom_density(fill = "grey", alpha = 0.7) +
@@ -168,3 +170,7 @@ cor_matrix <- df |>
   cor(method = "spearman")
 
 corrplot(cor_matrix, method = "number", type = "upper")
+
+shapiro.test(df$atencao_primaria)
+shapiro.test(df$atencao_secundaria)
+wilcox.test(df$atencao_primaria, df$atencao_secundaria)
