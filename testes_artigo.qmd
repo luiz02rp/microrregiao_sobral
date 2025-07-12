@@ -2,7 +2,7 @@
 title: "testes_artigo"
 format: html
 editor_options: 
-  chunk_output_type: inline
+  chunk_output_type: console
 ---
 
 ```{r}
@@ -24,7 +24,7 @@ library(stringi)
 #| echo: false
 #| label: "Importação"
 
-df <- read.csv("planilha_psis_municipio - níveis_atencao_psi.csv",
+df <- read.csv("planilha_psis_municipio - níveis_atencao_psi(1).csv",
                fileEncoding = "UTF-8-BOM", 
 stringsAsFactors = FALSE)
 
@@ -60,18 +60,6 @@ limpa_coluna <- function(col) {
 
 df[colunas_para_converter] <- lapply(df[colunas_para_converter], limpa_coluna)
 
-df <- df |>
-  mutate(qual_nivel_predomina = qual_nivel_predomina |>
-           stri_trans_general("Latin-ASCII") |>
-           str_to_lower() |>
-           str_trim())
-
-dados <- df |>
-  mutate(qual_nivel_predomina = qual_nivel_predomina |>
-           str_to_lower() |>         
-           str_trim() |>          
-           str_replace_all("í", "i")  
-  )
 ```
 
 ```{r}
@@ -83,15 +71,20 @@ dados <- df |>
 df <- left_join(df, df2, by = c("municipios" = "municipio"))
 
 df <- df |> 
-  mutate(
-    pop_pri = populacao/atencao_primaria,
-    pop_sec = populacao/atencao_secundaria
+  rename(
+    pop_pri = prim_psi,
+    pop_sec = sec_psi,
+    pop_ter = ter_psi
   )
 
 df$pop_pri[df$pop_pri == Inf] <- max(df$pop_pri[is.finite(df$pop_pri)], na.rm = TRUE)
 df$pop_sec[df$pop_sec == Inf] <- max(df$pop_sec[is.finite(df$pop_sec)], na.rm = TRUE)
+df$pop_ter[df$pop_ter == Inf] <- max(df$pop_ter[is.finite(df$pop_ter)], na.rm = TRUE)
 
+df <- df[-c(25, 26, 27), ]
 
+df <- df |>
+  select(-c(pop_total:idosos_homens))
 ```
 
 ```{r}
@@ -104,13 +97,23 @@ describe(df$total_de_psicologos)
 
 describe(df$atencao_primaria)
 
+sum(df$atencao_primaria)
+
 describe(df$atencao_secundaria)
+
+sum(df$atencao_secundaria)
+
+describe(df$atencao_terciaria)
+
+sum(df$atencao_terciaria)
 
 describe(df$pop_psi)
 
 describe(df$pop_pri)
 
 describe(df$pop_sec)
+
+describe(df$pop_pri)
 ```
 
 ```{r}
@@ -119,12 +122,15 @@ describe(df$pop_sec)
 #| echo: false
 #| label: "Pressupostos"
 
+shapiro.test(df$total_de_psicologos)
 shapiro.test(df$atencao_primaria)
 shapiro.test(df$atencao_secundaria)
+shapiro.test(df$atencao_terciaria)
 shapiro.test(df$populacao)
 shapiro.test(df$pop_psi)
 shapiro.test(df$pop_pri)
 shapiro.test(df$pop_sec)
+shapiro.test(df$pop_ter)
 ```
 
 ```{r}
