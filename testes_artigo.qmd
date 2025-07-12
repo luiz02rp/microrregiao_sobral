@@ -113,7 +113,6 @@ describe(df$pop_pri)
 
 describe(df$pop_sec)
 
-describe(df$pop_pri)
 ```
 
 ```{r}
