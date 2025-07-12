@@ -1,0 +1,185 @@
+---
+title: "testes_artigo"
+format: html
+---
+
+```{r}
+library(ggplot2)
+library(tidyverse)
+library(psych)
+library(dplyr)
+library(janitor)
+library(ggpubr)
+library(corrplot)
+library(rcompanion)
+library(stringr)
+library(stringi)
+```
+
+```{r}
+#| message: false
+#| warning: false
+#| echo: false
+#| label: "Importação"
+
+df <- read.csv("planilha_psis_municipio - níveis_atencao_psi.csv",
+               fileEncoding = "UTF-8-BOM", 
+stringsAsFactors = FALSE)
+
+df2 <- read.csv("data/pop_idade_sexo - Página1.csv")
+
+df2 <- janitor::clean_names(df2)
+df <- janitor::clean_names(df)
+```
+
+```{r}
+#| message: false
+#| warning: false
+#| echo: false
+#| label: "Tratamento dos dados"
+
+colunas_para_manter_como_texto <- c("municipios", "qual_nivel_predomina")
+
+colunas_caracter <- names(df)[sapply(df, is.character)]
+
+colunas_para_converter <- setdiff(colunas_caracter, colunas_para_manter_como_texto)
+
+print(colunas_para_converter)
+
+colunas_texto <- c(df$municipios, df$qual_nivel_predomina)
+
+limpa_coluna <- function(col) {
+  col <- gsub("\\.", "", col)       # remove ponto de milhar
+  col <- gsub(",", ".", col)        # troca vírgula decimal por ponto
+  col <- gsub("[^0-9.-]", "", col)  # remove qualquer outro símbolo
+  col <- trimws(col)
+  return(as.numeric(col))
+}
+
+df[colunas_para_converter] <- lapply(df[colunas_para_converter], limpa_coluna)
+
+df <- df |>
+  mutate(qual_nivel_predomina = qual_nivel_predomina |>
+           stri_trans_general("Latin-ASCII") |>
+           str_to_lower() |>
+           str_trim())
+
+dados <- df |>
+  mutate(qual_nivel_predomina = qual_nivel_predomina |>
+           str_to_lower() |>         
+           str_trim() |>          
+           str_replace_all("í", "i")  
+  )
+```
+
+```{r}
+#| message: false
+#| warning: false
+#| echo: false
+#| label: "Tratamento dos dados"
+
+df <- left_join(df, df2, by = c("municipios" = "municipio"))
+
+df <- df |> 
+  mutate(
+    pop_pri = populacao/atencao_primaria,
+    pop_sec = populacao/atencao_secundaria
+  )
+```
+
+```{r}
+#| message: false
+#| warning: false
+#| echo: false
+#| label: "Estatística Descritiva"
+
+describe(df$total_de_psicologos)
+
+describe(df$atencao_primaria)
+
+describe(df$atencao_secundaria)
+
+describe(df$pop_psi)
+
+describe(df$pop_pri)
+
+describe(df$pop_sec)
+```
+
+```{r}
+#| message: false
+#| warning: false
+#| echo: false
+#| label: "Pressupostos"
+
+shapiro.test(df$atencao_primaria)
+shapiro.test(df$atencao_secundaria)
+shapiro.test(df$populacao)
+shapiro.test(df$pop_psi)
+shapiro.test(df$pop_pri)
+shapiro.test(df$pop_sec)
+```
+
+```{r}
+#| message: false
+#| warning: false
+#| echo: false
+#| label: "Correlação"
+
+# 1. Correlação: Atenção Primária × População
+cor_primaria <- corr.test(df$populacao, df$atencao_primaria, method = "spearman")
+
+cor_primaria <- tibble(
+  Estatística = c("Coeficiente r", "Valor-p", "Limite Inferior IC 95%", "Limite Superior IC 95%", "t-valor"),
+  Valor = c(
+    cor_primaria$r,
+    cor_primaria$p,
+    cor_primaria$ci$lower,
+    cor_primaria$ci$upper,
+    cor_primaria$t
+  )
+)
+
+cor_primaria
+
+# 2. Correlação: Atenção Secundária × População
+cor_secundaria <- corr.test(df$populacao, df$atencao_secundaria, method = "spearman")
+
+
+cor_secundaria <- tibble(
+  Estatística = c("Coeficiente r", "Valor-p", "Limite Inferior IC 95%", "Limite Superior IC 95%", "t-valor"),
+  Valor = c(
+    cor_secundaria$r,
+    cor_secundaria$p,
+    cor_secundaria$ci$lower,
+    cor_secundaria$ci$upper,
+    cor_secundaria$t
+  )
+)
+
+cor_secundaria
+
+```
+
+```{r}
+#| message: false
+#| warning: false
+#| echo: false
+#| label: "Mann-Whitney"
+
+# Comparação de Médias: Atenção Primária x Atenção Secundária)
+
+wilcox.test(df$atencao_primaria, df$atencao_secundaria, paired = FALSE, exact = FALSE)
+tamanho_efeito_pri_sec <- wilcoxonR(df$atencao_primaria, df$atencao_secundaria, paired = FALSE)
+print(tamanho_efeito_pri_sec)
+
+#Comparação de Médias: (pop_pri x pop_sec)
+
+wilcox.test(df$pop_pri, df$pop_sec, paired = FALSE, exact = FALSE)
+valores <- c(df$pop_pri, df$pop_sec)
+grupos <- factor(rep(c("pop_pri", "pop_sec"), each = nrow(df)))
+wilcoxonR(x = valores, g = grupos, paired = FALSE)
+
+
+
+```
