@@ -16,6 +16,7 @@ library(corrplot)
 library(rcompanion)
 library(stringr)
 library(stringi)
+library(ggrepel)
 ```
 
 ```{r}
@@ -24,14 +25,18 @@ library(stringi)
 #| echo: false
 #| label: "Importação"
 
-df <- read.csv("planilha_psis_municipio - níveis_atencao_psi(1).csv",
+df <- read.csv("data/2_planilha_psis_níveis_atencao.csv",
                fileEncoding = "UTF-8-BOM", 
 stringsAsFactors = FALSE)
 
 df2 <- read.csv("data/pop_idade_sexo - Página1.csv")
 
+equipamentos_niveis <- read_csv("data/niveis_estabelecimentos_micro_sobral - Página1.csv")
+
 df2 <- janitor::clean_names(df2)
 df <- janitor::clean_names(df)
+equipamentos_niveis <- janitor::clean_names(equipamentos_niveis)
+
 ```
 
 ```{r}
@@ -74,7 +79,10 @@ df <- df |>
   rename(
     pop_pri = prim_psi,
     pop_sec = sec_psi,
-    pop_ter = ter_psi
+    pop_ter = ter_psi,
+    atencao_primaria_psis = atencao_primaria,
+    atencao_secundaria_psis = atencao_secundaria,
+    atencao_terciaria_psis = atencao_terciaria
   )
 
 df$pop_pri[df$pop_pri == Inf] <- max(df$pop_pri[is.finite(df$pop_pri)], na.rm = TRUE)
@@ -85,6 +93,31 @@ df <- df[-c(25, 26, 27), ]
 
 df <- df |>
   select(-c(pop_total:idosos_homens))
+
+df <- df %>%
+  rename(municipio = municipios) %>%              # padroniza nome da coluna
+  mutate(
+    municipio = str_to_lower(municipio),
+    municipio = str_squish(municipio),
+    municipio = stri_trans_general(municipio, "Latin-ASCII")
+  )
+
+# Para equipamentos_niveis
+equipamentos_niveis <- equipamentos_niveis %>%
+  rename(municipio = municipio) %>%               # padroniza nome da coluna
+  mutate(
+    municipio = str_to_lower(municipio),
+    municipio = str_squish(municipio),
+    municipio = stri_trans_general(municipio, "Latin-ASCII")
+  )
+
+equipamentos_niveis$municipio[equipamentos_niveis$municipio == "alcantara"] <- "alcantaras"
+
+equipamentos_niveis <- equipamentos_niveis[-25, ]
+
+df_completo <- left_join(df, equipamentos_niveis, by = "municipio")
+
+df_completo %>% filter(is.na(total))
 ```
 
 ```{r}
@@ -210,4 +243,86 @@ wilcoxonR(x = valores, g = grupos, paired = FALSE)
 
 
 
-```
+
+
+# Gráfico de Dispersão: População x Total de Psicólogos
+df$municipios <- str_to_title(tolower(df$municipios))
+municipios_destaque <- c("Sobral", "Ipu", "Massape", "Santa Quiteria", "Pacuja")
+
+grafico <- df |> 
+  ggplot(aes(x = populacao, y = total_de_psicologos)) +
+  geom_point(color = "black", size = 2) +
+  geom_text_repel(
+    data = subset(df, municipios %in% municipios_destaque),
+    aes(label = municipios),
+    size = 3
+  ) +
+  geom_smooth(method = "lm", se = FALSE, color = "blue", linetype = "solid") +
+  labs(
+    title = "Relação entre população e total de psicólogos por município",
+    x = "População",
+    y = "Total de Psicólogos"
+  ) +
+  theme_minimal() +
+  theme(
+    plot.title = element_text(size = 14, face = "bold"),
+    axis.title = element_text(size = 12)
+  ) +
+  scale_x_log10(labels = function(x) format(x, scientific = FALSE)) +
+  scale_y_log10(labels = function(x) format(x, scientific = FALSE)) +
+  scale_color_viridis_d() +
+  annotate(
+    "text", x = Inf, y = -Inf, hjust = 1.1, vjust = -1.1, 
+    label = paste0("Spearman r = ", round(cor_total$Valor[1], 3),
+                   "\nP-valor = ", signif(cor_total$Valor[2], 3)),
+    size = 4, color = "black"
+  )
+
+ggsave("grafico_populacao_psicologos.png", plot = grafico, width = 8, height = 6, dpi = 600)
+
+df$municipios <- str_to_title(tolower(df$municipios))
+municipios_destaque <- c("Sobral", "Ipu", "Massape", "Santa Quiteria", "Pacuja")
+
+
+
+
+
+#Gráfico de Dispersão: População x Equipamentos
+
+formata_titulo <- function(nomes) {
+  nomes %>%
+    tolower() %>%
+    str_squish() %>%
+    str_to_title()
+}
+
+df_completo <- df_completo |>
+  mutate(municipio = str_to_title(str_squish(municipio)))  #
+municipios_destaque <- c("Sobral", "Ipu", "Massape", "Santa Quiteria", "Pacuja", "Santana do Acarau", "Pires Ferreira", "Senador Sa")
+
+municipios_destaque <- formata_titulo(municipios_destaque)
+
+df_labels <- df_completo %>%
+  filter(municipio %in% municipios_destaque) %>%
+  mutate(municipio_label = formata_titulo(municipio))
+
+# Agora o gráfico
+grafico3 <- ggplot(df_completo, aes(x = populacao, y = total)) +
+  geom_point(color = "black", size = 2) +
+  geom_text_repel(
+    data = df_labels,
+    aes(label = municipio_label, x = populacao, y = total),
+    size = 3
+  ) +
+  geom_smooth(method = "lm", se = FALSE, color = "blue") +
+  scale_x_log10(labels = scales::comma) +
+  scale_y_log10(labels = scales::comma) +
+  theme_minimal() +
+  labs(
+    title = "Relação entre população e total de equipamentos",
+    x = "População",
+    y = "Total de Equipamentos"
+  )
+
+ggsave("grafico_equipamentos_pop.png", plot = grafico3, width = 8, height = 6, dpi = 600)
+

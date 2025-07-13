@@ -50,19 +50,19 @@ library(kableExtra)
 ce_municipios <- read_municipality(code_muni = "CE", year = 2024)
 
 # população da micro sobral
-pop_micro_sobral <- read_csv2("data/pop_ce_censo_2022_limpo.csv")
+pop_micro_sobral <- read_csv2("data/apresentacao_descritivas/pop_ce_censo_2022_limpo.csv")
 
 # mortalidade da micro sobral
-mort_nascidos_vivos_micro_sobral <- read_csv2("data/mort_e_nascidosvivos_micro_sobral.csv") 
+mort_nascidos_vivos_micro_sobral <- read_csv2("data/apresentacao_descritivas/mort_e_nascidosvivos_micro_sobral.csv") 
 
 # equipamentos
-equipamentos <- read_csv2("data/equipamentos_limpo.csv")
+equipamentos <- read_csv2("data/apresentacao_descritivas/equipamentos_limpo.csv")
 
 #idade e sexo
   pop_idade_sexo <- read.csv("data/pop_idade_sexo - Página1.csv")
   
 #ocorrencia x residencia
-  resid_ocorr <- read.csv("data/obitos_nascimento_ocorrencia_residencia.csv")
+  resid_ocorr <- read.csv("data/apresentacao_descritivas/obitos_nascimento_ocorrencia_residencia.csv")
 ```
 
 ```{r tratamento_dos_dados}
@@ -475,7 +475,7 @@ Em razão da grande quantidade de nascidos vivos e mortes em Sobral, esperamos q
 #| echo: false
 #| warning: false
 #| message: false
-mort_nascidos_vivos_micro_sobral |> 
+grafico_mort <- mort_nascidos_vivos_micro_sobral |> 
   ggplot(
     aes(x = nascidos_vivos, y = mortes)
   )+
@@ -498,6 +498,9 @@ mort_nascidos_vivos_micro_sobral |>
   scale_x_log10()+
   scale_y_log10()+
   scale_color_viridis_d()
+
+ggsave("grafico_mort_nasc.png", plot = grafico_mort, width = 8, height = 6, dpi = 600)
+
 ```
 
 ## Ocorrência e Residência
