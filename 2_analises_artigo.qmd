@@ -17,6 +17,10 @@ library(rcompanion)
 library(stringr)
 library(stringi)
 library(ggrepel)
+library(car)
+library(lmtest)
+library(broom)
+library(performance)
 ```
 
 ```{r}
@@ -159,6 +163,7 @@ shapiro.test(df$atencao_primaria)
 shapiro.test(df$atencao_secundaria)
 shapiro.test(df$atencao_terciaria)
 shapiro.test(df$populacao)
+shapiro.test(df_completo$total)
 shapiro.test(df$pop_psi)
 shapiro.test(df$pop_pri)
 shapiro.test(df$pop_sec)
@@ -220,7 +225,94 @@ cor_secundaria <- tibble(
 
 cor_secundaria
 
+# 4. Correlação: Estabelecimento × População
+cor_est <- corr.test(df_completo$populacao, df_completo$total, method = "spearman")
+
+
+cor_est <- tibble(
+  Estatística = c("Coeficiente r", "Valor-p", "Limite Inferior IC 95%", "Limite Superior IC 95%", "t-valor"),
+  Valor = c(
+    cor_est$r,
+    cor_est$p,
+    cor_est$ci$lower,
+    cor_est$ci$upper,
+    cor_est$t
+  )
+)
+
+cor_est
+
 ```
+
+```{r}
+
+verificar_pressupostos <- function(modelo, df, variaveis_categoricas = NULL) {
+  library(car)
+  library(lmtest)
+  library(broom)
+  library(performance)
+
+  termos <- length(attr(modelo$terms, "term.labels"))
+
+  if (termos >= 2) {
+    cat("\n--- Multicolinearidade (VIF e Tolerância) ---\n")
+    vif_valores <- vif(modelo)
+    print(data.frame(
+      Variável = names(vif_valores),
+      VIF = round(vif_valores, 2),
+      Tolerancia = round(1 / vif_valores, 3)
+    ))
+  } else {
+    cat("\n--- Multicolinearidade ---\n")
+    cat("VIF não se aplica (modelo com apenas uma variável preditora).\n")
+  }
+
+  cat("\n--- Independência dos resíduos (Durbin-Watson) ---\n")
+  print(dwtest(modelo))
+
+  cat("\n--- Homocedasticidade (Breusch-Pagan) ---\n")
+  print(bptest(modelo))
+
+  cat("\n--- Normalidade dos resíduos (Shapiro-Wilk) ---\n")
+  print(shapiro.test(resid(modelo)))
+
+  cat("\n--- Outliers influentes (Cook's Distance) ---\n")
+  cooks <- cooks.distance(modelo)
+  influentes <- which(cooks > (4 / nrow(df)))
+  if (length(influentes) == 0) {
+    cat("Nenhum outlier influente encontrado (Cook’s > 4/n).\n")
+  } else {
+    cat("Linhas influentes:\n")
+    print(influentes)
+  }
+
+  if (!is.null(variaveis_categoricas)) {
+    library(car)
+    cat("\n--- Teste de Levene para homogeneidade de variância ---\n")
+    for (var in variaveis_categoricas) {
+      formula_levene <- as.formula(paste("resid(modelo) ~", var))
+      cat(paste0("\n→ ", var, ":\n"))
+      print(car::leveneTest(formula_levene, data = df))
+    }
+  }
+}
+
+df_completo$pop_mil <- df_completo$populacao / 1000
+
+modelo <- lm(df_completo$total ~ df_completo$pop_mil)
+summary(modelo)
+
+verificar_pressupostos(
+  modelo,
+  df = df_completo
+)
+
+modelo_loglog <- lm(log_total ~ log_pop, data = df_completo)
+summary(modelo_loglog)
+
+
+```
+
 
 ```{r}
 #| message: false
@@ -242,9 +334,9 @@ grupos <- factor(rep(c("pop_pri", "pop_sec"), each = nrow(df)))
 wilcoxonR(x = valores, g = grupos, paired = FALSE)
 
 
+```
 
-
-
+```{r}
 # Gráfico de Dispersão: População x Total de Psicólogos
 df$municipios <- str_to_title(tolower(df$municipios))
 municipios_destaque <- c("Sobral", "Ipu", "Massape", "Santa Quiteria", "Pacuja")
@@ -325,4 +417,43 @@ grafico3 <- ggplot(df_completo, aes(x = populacao, y = total)) +
   )
 
 ggsave("grafico_equipamentos_pop.png", plot = grafico3, width = 8, height = 6, dpi = 600)
+
+
+library(ggpmisc)
+municipios_destaque <- c("Sobral", "Ipu", "Massape", "Santa Quiteria", "Pacuja")
+grafico_regressao <- ggplot(df_completo, aes(x = pop_mil, y = total)) +
+  geom_point(color = "black", size = 2) +
+  geom_smooth(method = "lm", se = FALSE, color = "blue") +
+  geom_text_repel(
+    data = subset(df_completo, municipio %in% municipios_destaque),
+    aes(label = municipio),
+    size = 3
+  ) +
+  stat_poly_eq(
+    aes(label = paste(..eq.label.., ..rr.label.., sep = "~~~")),
+    formula = y ~ x,
+    parse = TRUE,
+    size = 4,
+    label.x.npc = "right",
+    label.y.npc = 0.15
+  ) +
+  labs(
+    title = "Relação entre população (milhares) e total de estabelecimentos",
+    x = "População (milhares de habitantes)",
+    y = "Total de estabelecimentos"
+  ) +
+  theme_minimal() +
+  theme(
+    plot.title = element_text(face = "bold", size = 14),
+    axis.title = element_text(size = 12)
+  )
+ggsave(
+  filename = "grafico_regressao_populacao_estabelecimentos.png",
+  plot = grafico_regressao,
+  width = 8,      
+  height = 6,    
+  dpi = 600 
+)
+```
+
 
