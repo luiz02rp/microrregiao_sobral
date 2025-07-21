@@ -244,74 +244,7 @@ cor_est
 
 ```
 
-```{r}
 
-verificar_pressupostos <- function(modelo, df, variaveis_categoricas = NULL) {
-  library(car)
-  library(lmtest)
-  library(broom)
-  library(performance)
-
-  termos <- length(attr(modelo$terms, "term.labels"))
-
-  if (termos >= 2) {
-    cat("\n--- Multicolinearidade (VIF e Tolerância) ---\n")
-    vif_valores <- vif(modelo)
-    print(data.frame(
-      Variável = names(vif_valores),
-      VIF = round(vif_valores, 2),
-      Tolerancia = round(1 / vif_valores, 3)
-    ))
-  } else {
-    cat("\n--- Multicolinearidade ---\n")
-    cat("VIF não se aplica (modelo com apenas uma variável preditora).\n")
-  }
-
-  cat("\n--- Independência dos resíduos (Durbin-Watson) ---\n")
-  print(dwtest(modelo))
-
-  cat("\n--- Homocedasticidade (Breusch-Pagan) ---\n")
-  print(bptest(modelo))
-
-  cat("\n--- Normalidade dos resíduos (Shapiro-Wilk) ---\n")
-  print(shapiro.test(resid(modelo)))
-
-  cat("\n--- Outliers influentes (Cook's Distance) ---\n")
-  cooks <- cooks.distance(modelo)
-  influentes <- which(cooks > (4 / nrow(df)))
-  if (length(influentes) == 0) {
-    cat("Nenhum outlier influente encontrado (Cook’s > 4/n).\n")
-  } else {
-    cat("Linhas influentes:\n")
-    print(influentes)
-  }
-
-  if (!is.null(variaveis_categoricas)) {
-    library(car)
-    cat("\n--- Teste de Levene para homogeneidade de variância ---\n")
-    for (var in variaveis_categoricas) {
-      formula_levene <- as.formula(paste("resid(modelo) ~", var))
-      cat(paste0("\n→ ", var, ":\n"))
-      print(car::leveneTest(formula_levene, data = df))
-    }
-  }
-}
-
-df_completo$pop_mil <- df_completo$populacao / 1000
-
-modelo <- lm(df_completo$total ~ df_completo$pop_mil)
-summary(modelo)
-
-verificar_pressupostos(
-  modelo,
-  df = df_completo
-)
-
-modelo_loglog <- lm(log_total ~ log_pop, data = df_completo)
-summary(modelo_loglog)
-
-
-```
 
 
 ```{r}
@@ -326,7 +259,7 @@ wilcox.test(df$atencao_primaria, df$atencao_secundaria, paired = FALSE, exact = 
 tamanho_efeito_pri_sec <- wilcoxonR(df$atencao_primaria, df$atencao_secundaria, paired = FALSE)
 print(tamanho_efeito_pri_sec)
 
-#Comparação de Médias: (pop_pri x pop_sec)
+#Comparação entre grupos: (pop_pri x pop_sec)
 
 wilcox.test(df$pop_pri, df$pop_sec, paired = FALSE, exact = FALSE)
 valores <- c(df$pop_pri, df$pop_sec)
