@@ -63,7 +63,7 @@ ce_municipios |>
   theme_void()
 
 # B) Gráfico de coluna
-# população x nome do município
+# população x nome do município (frequência de habitantes por município)
 gra_col <- pop_micro_sobral |> 
   mutate(populacao_formatada = format(populacao, big.mark = ".", decimal.mark = ",")) |> 
   ggplot(
