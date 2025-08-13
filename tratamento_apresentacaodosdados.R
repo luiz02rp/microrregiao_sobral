@@ -11,7 +11,7 @@ library(plotly)
 ce_municipios <- read_municipality(code_muni = "CE", year = 2024)
 
 # população da micro sobral
-pop_micro_sobral <- read_csv2("data/micro_sobral.csv")
+pop_micro_sobral <- read_csv2("data/apresentaçãomicro_sobral.csv")
 
 # mortalidade da micro sobral
 mort_micro_sobral <- read_csv("data/mortalidade_micro_sobral.csv",
@@ -51,7 +51,7 @@ pop_micro_sobral |>
   )
 
 # análise gráfica ---------------------------------------------------------
-# A) Mapa de Calor Hierárquico
+# A) Mapa de Calor Hierárquico (apresentação)
 ce_municipios |> 
   ggplot()+
   geom_sf(aes(fill = populacao), color = "white", size = 0.1) +
