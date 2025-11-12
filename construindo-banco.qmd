@@ -1,0 +1,265 @@
+---
+title: "analises_descritivas"
+format: html
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r}
+# carregando pacotes
+library(tidyverse)
+library(arrow)
+library(readxl)
+library(janitor)
+library(genderBR)
+library(stringi)
+library(stringr)
+```
+
+```{r}
+# referenciando bancos de dados
+#nivel_assitencial <- read_csv2("data/rlEstabProgFundo202507.csv")
+## tabela dados profissionais
+profissionais_cnes <- open_dataset("data/profissionais_cnes.parquet")
+## carga horária (CBO) - vínculo com estabelecimento
+carga_horaria_sus <- open_dataset("data/tbCargaHorariaSus202507.parquet")
+## nível assistencial 
+estalecimentos <- open_dataset("data/tbEstabelecimento202507.parquet")
+```
+
+```{r}
+# dados populacionais
+pop_municipios <- read_excel("data/pop-muni.xls", "Municípios") |> 
+  clean_names()
+```
+
+
+```{r}
+# metadados cbo
+meta_cbo <- read_excel("data/SCNES_DOMINIOS.xlsx", "CBO (OCUPAÇÃO)") |> 
+  clean_names() |> 
+  rename(cbo = ocupacaoo)
+
+#metadados estabelecimentos
+meta_estab <- read_excel("data/SCNES_DOMINIOS.xlsx", "TIPOS DE ESTABELECIMENTO") |> 
+  clean_names() |> 
+  mutate(
+    tipo_estab = parse_double(tipo_de_estabelecimento)
+  ) |> 
+  rename(
+    estabelecimento = descricao   
+  ) |> 
+  select(
+    -tipo_de_estabelecimento
+  )
+```
+ 
+```{r}
+# tratar tabela sobre VÍNCULOS DO PROFISSIONAL NO ESTABELECIMENTO
+cbos_psi <- c("251545", "251510", "251525", "251505","251515", "251540", "251535", "251520", "251530", "251550")
+# psicólogo clínico e psicólogo da saúde têm o mesmo cbo (251510)
+## renomear, selecionar e filtar banco de dados
+carga_horaria_sus_limpa <- carga_horaria_sus |> 
+  rename(
+    codigo_estabelecimento_saude = CO_UNIDADE,
+    codigo_profissional_saude = CO_PROFISSIONAL_SUS,
+    cbo = CO_CBO,
+    atende_sus = TP_SUS_NAO_SUS,
+    tipo_vinculacao = IND_VINCULACAO,
+    tp_terceiro = TP_TERCEIRO_SIH,
+    carga_horaria_ambulatorio = QT_CARGA_HORARIA_AMBULATORIAL,
+    codigo_orgao_emissor = CO_CONSELHO_CLASSE,
+    registro_conselho_classe = NU_REGISTRO,
+    uf_crm = SG_UF_CRM,
+    preceptor = TP_PRECEPTOR,
+    residente = TP_RESIDENTE,
+    cnpj = NU_CNPJ_DETALHAMENTO_VINCULO, 
+    carga_horaria_outros = QT_CARGA_HORARIA_OUTROS,
+    carga_horaria_hospitalar = QT_CARGA_HOR_HOSP_SUS
+  ) |> 
+  select(codigo_estabelecimento_saude, codigo_profissional_saude, cbo, atende_sus) |> 
+  filter(cbo %in% cbos_psi, atende_sus == "S") 
+```
+
+```{r}
+# tratar banco de dados sobre estabelecimentos
+## renomear, selecionar variáveis de interesse
+estalecimentos_limpo <- estalecimentos |> 
+  rename(codigo_estabelecimento_saude = CO_UNIDADE,
+         codigo_cnes = CO_CNES,
+         razao_social = NO_RAZAO_SOCIAL,
+         fantasia = NO_FANTASIA,
+         micro_regiao_saude = CO_MICRO_REGIAO,
+         regiao_saude = CO_REGIAO_SAUDE,
+         tipo_estab = TP_UNIDADE,
+         estado = CO_ESTADO_GESTOR,
+         municipio = CO_MUNICIPIO_GESTOR,
+         cod_tp_estab = CO_TIPO_UNIDADE,
+         contrato_sus = ST_CONTRATO_FORMALIZADO,
+         tipo_gestao = TP_GESTAO) |> 
+  select(codigo_estabelecimento_saude, codigo_cnes, razao_social, fantasia, tipo_estab, estado, municipio, contrato_sus, tipo_gestao) |> 
+  # categorizar por nível de atenção à saúde
+  mutate(nivel_atencao = case_when(tipo_estab %in% c(1, 2, 50, 71, 72, 74, 75) ~ "atenção primária",
+                                   tipo_estab %in% c(4, 15, 20, 21, 22, 36, 70, 61, 62, 73, 77, 78, 79) ~ "atenção secundária",
+                                   tipo_estab %in% c(5, 7, 69) ~ "atenção terciária",
+                                   tipo_estab %in% c(32, 40, 42, 68, 76, 81, 82) ~ "sistemas logísticos",
+                                   tipo_estab %in% c(39, 43, 60, 67, 80) ~ "sistemas de apoio"), .after = tipo_estab) |> 
+  arrange(tipo_estab) 
+```
+
+```{r}
+#verificar se cada estabelecimento tem apenas uma observação
+#estalecimentos_limpo |> 
+  #count(codigo_estabelecimento_saude) |> 
+  #filter(n > 1)
+```
+
+```{r}
+#Verificar se não há dados vazios em codigo de estabelecimento de saúde
+#estalecimentos_limpo |> 
+  #filter(is.na(codigo_estabelecimento_saude))
+```
+
+```{r}
+# tratar banco sobre profissionais
+## renomear, selecionar
+profissionais_cnes_limpo <- profissionais_cnes |> 
+  rename(codigo_profissional_saude = CO_PROFISSIONAL_SUS,
+         cpf = `'CO_CPF'`,
+         nome = NO_PROFISSIONAL,
+         cartao_saude = CO_CNS,
+         nacionalidade = CO_NACIONALIDADE,
+  ) |> 
+  select(codigo_profissional_saude, cpf, nome, cartao_saude, nacionalidade)
+```
+
+```{r}
+#verificar se não há codigos de profissionais repetidos
+#profissionais_cnes_limpo |> 
+  #count(codigo_profissional_saude) |> 
+  #filter(n > 1)
+```
+
+```{r}
+#profissionais_cnes_limpo |> 
+  #filter(is.na(codigo_profissional_saude))
+```
+
+```{r}
+# JUNÇÃO DE TABELAS
+## carga horária com estabelecimentos 
+carga_horária_and_establecimentos <- carga_horaria_sus_limpa |> 
+  left_join(estalecimentos_limpo, by = "codigo_estabelecimento_saude")
+
+## carga horária, estabelecimento e profissionais
+psi_nivel_assit <- carga_horária_and_establecimentos |> 
+  left_join(profissionais_cnes_limpo, by = "codigo_profissional_saude") |> 
+  collect()
+```
+
+
+```{r}
+# tratando metadados de população dos municipios 
+pop_municipios <- pop_municipios |> 
+  rename(
+    cod_municipio_seq = cod_munic, 
+    populacao_muni = populacao_estimada
+  ) |> 
+  mutate(
+    cod_muni_5d = str_pad(cod_municipio_seq, width = 5, side = "left", pad = "0"),
+    cod_ibge_7d = paste0(cod_uf, cod_muni_5d),
+    cod_ibge_7d = as.character(cod_ibge_7d)
+  ) |> 
+  select(cod_ibge_7d, populacao_muni, uf, nome_do_municipio)
+
+df_pop <- pop_municipios |> 
+  mutate(
+    municipio = str_sub(cod_ibge_7d, 1, 6)
+  ) |> 
+  select(nome_do_municipio, municipio, uf, populacao_muni) |> 
+  distinct(municipio, .keep_all = T) 
+
+# tornar variável chave no mesmo tipo de variável
+psi_nivel_assit <- psi_nivel_assit |> 
+  mutate(
+    municipio = as.character(municipio)
+    )
+```
+
+```{r}
+# juntar banco de dados com metadados
+df_psi_pop <- psi_nivel_assit |> 
+  left_join(df_pop) |> 
+  left_join(meta_cbo) |> 
+  left_join(meta_estab)
+```
+
+
+```{r}
+# tratar banco de dados
+df_psi_pop <- df_psi_pop |> 
+  rename(
+    codigo_estado = estado,
+    codigo_municipio = municipio,
+    estado = uf,
+    codigo_tipo_estabelecimento = tipo_estab
+    ) |> 
+  select(
+    nome,
+    codigo_profissional_saude,
+    cartao_saude,
+    cbo,
+    estabelecimento,
+    nivel_atencao,
+    codigo_tipo_estabelecimento,
+    codigo_estabelecimento_saude,
+    fantasia,
+    estado,
+    codigo_estado,
+    nome_do_municipio,
+    codigo_municipio,
+    tipo_gestao
+  ) 
+```
+
+```{r}
+df_psi_pop <- df_psi_pop |> 
+  mutate(
+    genero = get_gender(nome),
+    .after = nome
+  )
+```
+
+```{r}
+# Região Norte
+norte <- c("AC", "AP", "AM", "PA", "RO", "RR", "TO")
+
+# Região Nordeste
+nordeste <- c("AL", "BA", "CE", "MA", "PB", "PE", "PI", "RN", "SE")
+
+# Região Centro-Oeste
+centro_oeste <- c("DF", "GO", "MT", "MS")
+
+# Região Sudeste
+sudeste <- c("ES", "MG", "RJ", "SP")
+
+# Região Sul
+sul <- c("PR","RS","SC")
+```
+
+```{r}
+df_psi_pop <- df_psi_pop |> 
+  mutate(
+    regiao = case_when(estado %in% norte ~ "Norte",
+                       estado %in% nordeste ~ "Nordeste",
+                       estado %in% centro_oeste ~ "Centro-oeste",
+                       estado %in% sudeste ~ "Sudeste",
+                       estado %in% sul ~ "Sul",
+                       .default = estado)
+  ) 
+```
+
+```{r}
+df_psi_pop |> 
+  write.csv("data/dados-limpo.csv")
+```

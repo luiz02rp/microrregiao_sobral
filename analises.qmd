@@ -1,0 +1,131 @@
+---
+title: "analises_psi"
+format: html
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r}
+library(tidyverse)
+library(janitor)
+```
+
+```{r}
+df <- read.csv("data/dados-limpo.csv") |> 
+  as_tibble()
+```
+
+```{r}
+# Filtrar apenas níveis assistenciais
+df <- df |> 
+  clean_names() |> 
+  filter(
+    nivel_atencao == "atenção primária" | nivel_atencao == "atenção secundária" | nivel_atencao == "atenção terciária"
+  ) |> 
+  select(
+    -x
+  ) 
+```
+
+
+```{r}
+# quantidade vínculos de psicólogos por nível assistencial no Brasil
+df |> 
+  count(nivel_atencao) |> 
+  mutate(
+    prop = n / sum(n) * 100
+  )
+```
+
+```{r}
+# quantidade de vínculos de psicólogos por nível assistencial em cada região
+df |> 
+  count(nivel_atencao, regiao) |> 
+  group_by(regiao) |> 
+  mutate(
+    prop = n / sum(n) * 100
+  ) |> 
+  ungroup() 
+```
+
+```{r}
+# quantidade de vículos de psicólogos por gênero
+df |> 
+  count(genero) |> 
+  mutate(
+    prop = n / sum(n) * 100
+  ) 
+```
+
+```{r}
+# quantidade de vículos de psicólogos por gênero em cada nível assistencial
+df |> 
+  count(genero, nivel_atencao) |>
+  group_by(nivel_atencao) |> 
+  mutate(
+    prop = n / sum(n) * 100
+  ) |> 
+  ungroup()
+```
+
+```{r}
+# sem repetição de psicólogos
+psi_uni <- df |> 
+  distinct(codigo_profissional_saude,.keep_all = T) 
+```
+
+```{r}
+# quantidade de psicólogos sem repetição de acordo com o gênero
+psi_uni |>
+  drop_na(genero) |> 
+  count(genero) |> 
+  mutate(
+    prop = n / sum(n)
+  )
+```
+
+```{r}
+df |> 
+  filter(nivel_atencao != "aguardando categorização") |> 
+  drop_na(genero) |> 
+  count(nivel_atencao, genero) |> 
+  mutate(
+    prop = n / sum(n),
+    .by = nivel_atencao
+  ) |> 
+  ggplot(
+    aes(prop, nivel_atencao, fill = genero)
+  )+
+  geom_col()
+```
+
+```{r}
+df |> 
+  filter(nivel_atencao != "aguardando categorização") |> 
+  count(estado, nivel_atencao) |> 
+  mutate(
+    prop = n / sum(n),
+    .by = estado
+  ) |> 
+  View()
+```
+
+```{r}
+df |> 
+  filter(nivel_atencao != "aguardando categorização") |> 
+  count(nivel_atencao) |> 
+  mutate(
+    prop = n / sum(n)
+  )
+```
+
+```{r}
+df |> 
+  filter(nivel_atencao != "aguardando categorização") |>
+  count(regiao, nivel_atencao) |> 
+  mutate(
+    prop = n / sum(n),
+    .by = regiao
+  )
+```
+
